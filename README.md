@@ -1,3 +1,3 @@
 # NoteShot
 
-React Native application for taking note
+React Native application for taking notes
