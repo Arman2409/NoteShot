@@ -1,7 +1,10 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-    tab: {
-        
+    action_button: {
+        width: 40,
+        height: 40,
+        backgroundColor: "purple",
+        borderRadius: 10,
     }
 })
