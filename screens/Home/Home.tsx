@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { Button, List } from 'antd-mobile';
 import { AiFillDelete } from 'react-icons/ai';
@@ -7,6 +7,8 @@ import styles from './assests/styles.ts';
 import { NotesAndStatusContext } from '../../App.tsx';
 import { NoteType } from '../../types/types.ts';
 import showDeleteModal from './functions/showDeleteModal.ts';
+import { LuPlus } from 'react-icons/lu';
+import globals from '../../styles/globals.ts';
 
 const testNotes = [{
   title: {
@@ -46,11 +48,22 @@ export const Home = ({ navigation }: { navigation: any }) => {
     ));
   }, [showDeleteModal, setNotes])
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerStyle: globals.header,
+      headerRight: () => (
+          <Button
+            block
+            style={styles.add_button}
+            onClick={addNote}>
+            <LuPlus />
+          </Button>
+      )
+    })
+  }, [])
+
   return (
     <View style={styles.main}>
-      <Text style={styles.title}>
-        Welcome on Board
-      </Text>
       <List
         header="My Notes"
         mode="card"
@@ -84,14 +97,6 @@ export const Home = ({ navigation }: { navigation: any }) => {
       >
         No notes yet
       </Text>}
-      <Button
-        block
-        color="success"
-        style={styles.add_button}
-        onClick={addNote}
-      >
-        Add Note
-      </Button>
     </View>
   );
 }

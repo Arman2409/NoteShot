@@ -12,6 +12,7 @@ import type { NoteType } from "../../types/types";
 import { NotesAndStatusContext } from '../../App.tsx';
 import { generateUniqueId } from "./utils/functions.ts";
 import EditButtons from "./components/EditButtons/EditButtons.tsx";
+import globals from "../../styles/globals.ts";
 
 const styleOptions = [
     { key: '1', label: <PiTextUnderlineBold />, value: "underline" },
@@ -29,9 +30,9 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     const titleInput = useRef<any>(null);
     const textArea = useRef<any>(null);
-    const noteDetails = useRef<any>({ title: { styles: {} }, content: { styles: {}} });
+    const noteDetails = useRef<any>({ title: { styles: {} }, content: { styles: {} } });
 
-    const { setNotes: setContextNotes, currentNote } = useContext<any>(NotesAndStatusContext);
+    const { notes, setNotes: setContextNotes, currentNote } = useContext<any>(NotesAndStatusContext);
 
     const addEditNote = useCallback(() => {
         if (!title) {
@@ -50,8 +51,8 @@ const Note = ({ navigation }: { navigation: any }) => {
             });
             return;
         }
-        if(mode === "add"){
-            generateUniqueId([], ((id:string) => {
+        if (mode === "add") {
+            generateUniqueId(notes, ((id: string) => {
                 setContextNotes((notes: NoteType[]) => [
                     {
                         id,
@@ -71,9 +72,9 @@ const Note = ({ navigation }: { navigation: any }) => {
         }
         if (mode === "edit") {
             setContextNotes((notes: NoteType[]) => (
-                 notes.map((note:NoteType) => {
-                     const {id} = note;
-                     if(id === currentNote.id) { 
+                notes.map((note: NoteType) => {
+                    const { id } = note;
+                    if (id === currentNote.id) {
                         return ({
                             id,
                             date: new Date().toString().slice(4, 15),
@@ -86,8 +87,8 @@ const Note = ({ navigation }: { navigation: any }) => {
                                 styles: noteDetails.current.content.styles
                             }
                         })
-                     }
-                     return note;
+                    }
+                    return note;
                 })
             ))
         }
@@ -155,7 +156,7 @@ const Note = ({ navigation }: { navigation: any }) => {
     }, [clickedType, content, title])
 
     const cancelNote = useCallback(() => {
-        if(mode === "add") {
+        if (mode === "add") {
             if (title || content) {
                 Modal.show({
                     actions: [
@@ -217,6 +218,12 @@ const Note = ({ navigation }: { navigation: any }) => {
         }
     }, [currentNote, setTitle, setContent])
 
+    useEffect(() => {
+        navigation.setOptions({
+            headerStyle: globals.header
+        })
+    }, [])
+
     return (
         <View style={styles.note_main}>
             {showColorPicker &&
@@ -239,20 +246,24 @@ const Note = ({ navigation }: { navigation: any }) => {
                 visible={showEmojis}
                 onClose={() => setShowEmojis(false)}
             />
-            <Selector
-                options={styleOptions}
-                multiple={true}
-                onChange={changeStyles}
-                showCheckMark={false}
-                style={{
-                    margin: "0 auto"
-                }}
-            />
-            <EditButtons setShowEmojis={setShowEmojis} setShowColorPicker={setShowColorPicker}/>
+            <View style={styles.actions_cont}>
+                <Selector
+                    options={styleOptions}
+                    multiple={true}
+                    onChange={changeStyles}
+                    showCheckMark={false}
+                    style={styles.selector}
+                />
+                <EditButtons
+                    setShowEmojis={setShowEmojis}
+                    setShowColorPicker={setShowColorPicker} />
+            </View>
             <Form layout='horizontal'>
                 <Form.Item
                     label='Title'
-                    onClick={() => setClickedType("title")}>
+                    arrow={false}
+                    onClick={() => setClickedType("title")}
+                    >
                     <Input
                         placeholder='Title for the note'
                         clearable

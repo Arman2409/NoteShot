@@ -7,10 +7,18 @@ export default StyleSheet.create({
         width: "100%",
         backgroundColor: variables.themeColorLight
     },
+    actions_cont: {
+       width: "100%",
+       paddingVertical: 5,
+       backgroundColor: variables.themeColorGreyLight,
+    },
+    selector: {
+       margin: "auto",
+    },
     action_button: {
         width: 40,
         height: 40,
-        backgroundColor: variables.themeColorGreyDark,
+        backgroundColor: variables.themeColorDark,
         borderRadius: 10
     },
     action_icon: {

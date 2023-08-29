@@ -8,8 +8,17 @@ export default StyleSheet.create({
         width: "100%"
     },
     add_button: {
-        position: "absolute",
-        bottom: 0
+        width: 38,
+        height: 38,
+        borderRadius: 50,
+        marginRight: 10,
+        paddingTop: 12,
+        backgroundColor: variables.themeColorGreyLight,
+        color: variables.themeColorDark,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: variables.buttonBoxShadow,
     },
     title: {
         fontSize: 25,
