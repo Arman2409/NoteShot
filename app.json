@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "noteTaker",
-    "slug": "noteTaker",
+    "name": "NoteShot",
+    "slug": "NoteShot",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
