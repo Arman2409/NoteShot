@@ -3,26 +3,36 @@ import variables from "../../../styles/variables";
 
 export default StyleSheet.create({
     main: {
-        backgroundColor: variables.themeColorGreyLight,
+        backgroundColor: variables.colorGreyLight,
         height: "100%",
         width: "100%"
     },
+    add_buttons_cont: {
+        position: "absolute",
+        bottom: 15,
+        right: 15
+    },
     add_button: {
-        width: 38,
-        height: 38,
+        width: 55,
+        height: 55,
         borderRadius: 50,
         marginRight: 10,
         paddingTop: 12,
-        backgroundColor: variables.themeColorGreyLight,
-        color: variables.themeColorDark,
+        margin: 5,
+        zIndex: 2,
+        backgroundColor: variables.colorLight,
+        color: variables.colorDark,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         boxShadow: variables.buttonBoxShadow,
-    },
+    }  as any,
+    group_button: {
+        margin: "0px 5px",
+    } as any,
     title: {
         fontSize: 25,
-        color: variables.themeColorGreyDark,
+        color: variables.colorGreyDark,
         margin: "auto",
         marginTop: 0,
         marginBottom: 0
@@ -36,6 +46,12 @@ export default StyleSheet.create({
     },
     delete_icon: {
         marginTop:3.5,
-        color: "orangered"
-    }
+        color: variables.colorWarning
+    },
+    member_notes_list: {
+        marginLeft: 5,
+    },
+    member_notes_list_item: {
+        backgroundColor: variables.colorLight
+    },
 })

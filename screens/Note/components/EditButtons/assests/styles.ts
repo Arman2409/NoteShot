@@ -5,11 +5,11 @@ export default StyleSheet.create({
     action_button: {
         width: 40,
         height: 40,
-        backgroundColor: variables.themeColorGreyDark,
+        backgroundColor: variables.colorGreyDark,
         borderRadius: 10
     },
     action_icon: {
-        color: variables.themeColorGreyLight
+        color: variables.colorGreyLight
     },
     edit_buttons_main: {
         width: "60%",

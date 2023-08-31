@@ -8,5 +8,12 @@ export type NoteType = {
     content: {
         styles: any
         data: string
-    }
+    },
+    groupId: string|null
+}
+
+export type GroupType = {
+    id: string
+    name: string
+    memberNotes: NoteType[]
 }

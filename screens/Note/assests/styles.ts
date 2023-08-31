@@ -5,12 +5,12 @@ export default StyleSheet.create({
     note_main: {
         height: "100%",
         width: "100%",
-        backgroundColor: variables.themeColorLight
+        backgroundColor: variables.colorLight
     },
     actions_cont: {
        width: "100%",
        paddingVertical: 5,
-       backgroundColor: variables.themeColorGreyLight,
+       backgroundColor: variables.colorGreyLight,
     },
     selector: {
        margin: "auto",
@@ -18,11 +18,11 @@ export default StyleSheet.create({
     action_button: {
         width: 40,
         height: 40,
-        backgroundColor: variables.themeColorDark,
+        backgroundColor: variables.colorDark,
         borderRadius: 10
     },
     action_icon: {
-        color: variables.themeColorGreyLight
+        color: variables.colorGreyLight
     },
     color_picker: {
         position: "absolute",
@@ -41,6 +41,6 @@ export default StyleSheet.create({
         bottom: 0
     },
     modal_cancel_button: {
-        backgroundColor: "orangered"
+        backgroundColor: variables.colorWarning
     }
 })

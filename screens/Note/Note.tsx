@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { Selector, TextArea, Input, Button, Form, Modal } from "antd-mobile";
 import { RxFontItalic } from "react-icons/rx";
 import { PiTextUnderlineBold } from "react-icons/pi";
@@ -8,7 +8,7 @@ import EmojiSelector from "react-native-emoji-selector";
 import { CompactPicker } from "react-color";
 
 import styles from "./assests/styles";
-import type { NoteType } from "../../types/types";
+import type { GroupType, NoteType } from "../../types/types";
 import { NotesAndStatusContext } from '../../App.tsx';
 import { generateUniqueId } from "./utils/functions.ts";
 import EditButtons from "./components/EditButtons/EditButtons.tsx";
@@ -26,13 +26,14 @@ const Note = ({ navigation }: { navigation: any }) => {
     const [clickedType, setClickedType] = useState<"text" | "title">("text");
     const [showEmojis, setShowEmojis] = useState<boolean>(false);
     const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
-    const [mode, setMode] = useState<"add" | "edit">("add");
+    const [mode, setMode] = useState<"add" | "edit" | "addToGroup">("add");
+    const [showGroup, setShowGroup] = useState<boolean>(false);
 
     const titleInput = useRef<any>(null);
     const textArea = useRef<any>(null);
     const noteDetails = useRef<any>({ title: { styles: {} }, content: { styles: {} } });
 
-    const { notes, setNotes: setContextNotes, currentNote } = useContext<any>(NotesAndStatusContext);
+    const { notes, setNotes: setContextNotes, groups, setGroups, currentNote, addingGroupId } = useContext<any>(NotesAndStatusContext);
 
     const addEditNote = useCallback(() => {
         if (!title) {
@@ -70,6 +71,37 @@ const Note = ({ navigation }: { navigation: any }) => {
                 ])
             }))
         }
+        if (mode === "addToGroup") {
+            const allMembers = groups.filter(({ id }: GroupType) => id === addingGroupId)[0].memberNotes || [];
+            generateUniqueId(allMembers, ((newId: string) => {
+                setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
+                    if (group.id === addingGroupId) {
+                        const { id, name, memberNotes } = group;
+                        return {
+                            id,
+                            name,
+                            memberNotes: [
+                                {
+                                    id: newId,
+                                    groupId: addingGroupId,
+                                    date: new Date().toString().slice(4, 15),
+                                    title: {
+                                        data: title,
+                                        styles: noteDetails.current.title.styles
+                                    },
+                                    content: {
+                                        data: content,
+                                        styles: noteDetails.current.content.styles
+                                    }
+                                },
+                                ...memberNotes || []
+                            ]
+                        }
+                    }
+                    return group;
+                }))
+            }))
+        }
         if (mode === "edit") {
             setContextNotes((notes: NoteType[]) => (
                 notes.map((note: NoteType) => {
@@ -92,7 +124,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                 })
             ))
         }
-    }, [title, content, currentNote, noteDetails.current, mode])
+    }, [title, content, groups, addingGroupId, currentNote, noteDetails.current, mode])
 
     const changeProperty = useCallback((property: string, value: string) => {
         if (clickedType === "title") {
@@ -156,7 +188,7 @@ const Note = ({ navigation }: { navigation: any }) => {
     }, [clickedType, content, title])
 
     const cancelNote = useCallback(() => {
-        if (mode === "add") {
+        if (mode === "add" || mode === "addToGroup") {
             if (title || content) {
                 Modal.show({
                     actions: [
@@ -201,6 +233,12 @@ const Note = ({ navigation }: { navigation: any }) => {
     }, [title, content, currentNote])
 
     useEffect(() => {
+        if (addingGroupId) {
+            setMode("addToGroup")
+        }
+        if (currentNote.groupId) {
+            setShowGroup;
+        }
         const { title: currentTitle, content: currentContent } = currentNote;
         if (currentTitle?.data) {
             const { data: titleData, styles: titleStyles } = currentTitle;
@@ -216,7 +254,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             setMode("edit");
             noteDetails.current = currentNote;
         }
-    }, [currentNote, setTitle, setContent])
+    }, [currentNote, addingGroupId, setTitle, setContent])
 
     useEffect(() => {
         navigation.setOptions({
@@ -226,6 +264,9 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     return (
         <View style={styles.note_main}>
+            {showGroup && <Text>
+                {groups.filter(({ name, id }: GroupType) => id === currentNote.groupId)[0].name}
+            </Text>}
             {showColorPicker &&
                 <View style={styles.color_picker}>
                     <AiOutlineClose
@@ -263,7 +304,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                     label='Title'
                     arrow={false}
                     onClick={() => setClickedType("title")}
-                    >
+                >
                     <Input
                         placeholder='Title for the note'
                         clearable

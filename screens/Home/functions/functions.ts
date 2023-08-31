@@ -1,6 +1,6 @@
 import { Modal } from "antd-mobile"
 
-const showDeleteModal = (deleteFunction:any) => Modal.show({
+export const showDeleteModal = (deleteFunction:any) => Modal.show({
     content: "Are you sure to delete the Note",
     closeOnAction: true,
     actions: [
@@ -19,5 +19,3 @@ const showDeleteModal = (deleteFunction:any) => Modal.show({
          },
     ]
 })
-
-export default showDeleteModal;
