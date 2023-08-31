@@ -8,7 +8,7 @@ export default StyleSheet.create({
     alignItems: "center",
    },
    header: {
-      backgroundColor: variables.themeColorLight,
-      color: variables.themeColorGreyDark,
+      backgroundColor: variables.colorLight,
+      color: variables.colorGreyDark,
    }
 })

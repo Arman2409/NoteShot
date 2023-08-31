@@ -8,7 +8,7 @@ import type { GroupType, NoteType } from './types/types';
 
 const Stack = createNativeStackNavigator();
 
-export const NotesAndStatusContext = createContext(null);
+export const NotesAndStatusContext = createContext({});
 
 const testNotes = [{
     date: "29 Aug 2023",
@@ -31,8 +31,16 @@ const testNotes = [{
 
 const testGroups = [{
     id: "$2a$05$cVWpIDLXr9IHZC0W.xSaMOZJjk7VTmHF0HfKB6D9PPm3f7U6ZRn2e",
-    memberNotes: [],
-    name: "frfrfr"
+    memberNotes: [
+        {
+            content: { data: 'fffffffffffff', styles: {} },
+            date: "Aug 31 2023",
+            groupId: "$2a$05$cVWpIDLXr9IHZC0W.xSaMOZJjk7VTmHF0HfKB6D9PPm3f7U6ZRn2e",
+            id: "$2a$05$Pja9jmhJPi9gESjeUBtF9.2y46/m00cXr5ApDMrom4dOYr7dDLwQC",
+            title: { data: 'ffffffff', styles: {} },
+        }
+    ],
+    name: "test group"
 }]
 
 const App = () => {

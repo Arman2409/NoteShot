@@ -34,7 +34,8 @@ export default StyleSheet.create({
     },
     add_edit_button: {
         position: "absolute",
-        bottom: 50
+        bottom: 50,
+        backgroundColor: variables.colorSuccess
     },
     cancel_button: {
         position: "absolute",

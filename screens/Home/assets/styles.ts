@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+
 import variables from "../../../styles/variables";
 
 export default StyleSheet.create({
@@ -27,9 +28,6 @@ export default StyleSheet.create({
         justifyContent: "center",
         boxShadow: variables.buttonBoxShadow,
     }  as any,
-    group_button: {
-        margin: "0px 5px",
-    } as any,
     title: {
         fontSize: 25,
         color: variables.colorGreyDark,
@@ -44,9 +42,24 @@ export default StyleSheet.create({
         marginBottom: 0,
         backgroundColor: "transparent"
     },
+    group_button: {
+        marginLeft: 3.5,
+        marginRight: 3.5,
+        marginTop: 3.5,
+    },
     delete_icon: {
-        marginTop:3.5,
         color: variables.colorWarning
+    },
+    delete_button: {
+       backgroundColor: variables.colorWarning,
+       color: variables.colorLight,
+    },
+    cancel_button : {
+        backgroundColor: variables.colorSuccess,
+        color: variables.colorLight,
+    },
+    add_icon: {
+        color: variables.colorDark
     },
     member_notes_list: {
         marginLeft: 5,

@@ -7,7 +7,7 @@ import { IoDocumentsOutline } from "react-icons/io5";
 import { BsFileEarmarkPlus } from "react-icons/bs";
 import { LuPlus } from 'react-icons/lu';
 
-import styles from './assests/styles.ts';
+import styles from './assets/styles.ts';
 import { NotesAndStatusContext } from '../../App.tsx';
 import type { GroupType, NoteType } from '../../types/types.ts';
 import { showDeleteModal } from './functions/functions.ts';
@@ -16,7 +16,7 @@ import AddGroup from './components/AddGroup/AddGroup.tsx';
 export const Home = ({ navigation }: { navigation: any }) => {
   const [addGroupStatus, setAddGroupStatus] = useState<boolean>(false);
   const [openedGroup, setOpenedGroup] = useState<string>("");
-  const { setCurrentNote, setAddingGroupId, groups, notes, setNotes } = useContext<any>(NotesAndStatusContext);
+  const { setCurrentNote, setAddingGroupId, groups, setGroups, notes, setNotes } = useContext<any>(NotesAndStatusContext);
 
   const editNote = useCallback((note: NoteType) => {
     setCurrentNote(note);
@@ -30,11 +30,25 @@ export const Home = ({ navigation }: { navigation: any }) => {
     navigation.navigate("Note");
   }, [setCurrentNote])
 
-  const remove = useCallback((e: Event, type: "note" | "group", id: string) => {
+  const remove = useCallback((e: Event, type: "note" | "group" | "member", id: string, parentId?: string) => {
     e.stopPropagation();
-    showDeleteModal(type === "note" ?
-      () => setNotes((notes: NoteType[]) => notes.filter(({ id: noteId }) => id !== noteId)) :
-      () => setNotes((notes: NoteType[]) => notes.filter(({ id: noteId }) => id !== noteId)));
+    switch (type) {
+      case "note": showDeleteModal("Note",() => setNotes((notes: NoteType[]) => notes.filter(({ id: noteId }) => id !== noteId)));
+        break;
+      case "group": showDeleteModal("Group", () => setGroups((groups: GroupType[]) => groups.filter(({ id: groupId }) => id !== groupId)));
+        break;
+      case "member": showDeleteModal("Note", () => setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
+         if(group.id === parentId) {
+           const { name, memberNotes} = group;
+           return {
+            id: parentId,
+            name,
+            memberNotes: memberNotes.filter((note:NoteType) => note.id !== id),
+           }
+         }
+         return group;
+      })))
+    }
   }, [showDeleteModal, setNotes])
 
   const addToGroup = useCallback((e: Event, id: string) => {
@@ -76,9 +90,12 @@ export const Home = ({ navigation }: { navigation: any }) => {
               onClick={() => setOpenedGroup((curr: string) => curr === id ? "" : id)}
               extra={<>
                 <BsFileEarmarkPlus
-                  style={styles.group_button}
-                  size={20}
-                  onClick={(e: any) => addToGroup(e, id)}
+                  style={{
+                    ...styles.add_icon,
+                    ...styles.group_button
+                  }}
+                  size={16}
+                  onClick={(event: any) => addToGroup(event, id)}
                 />
                 <AiFillDelete
                   style={{
@@ -86,20 +103,20 @@ export const Home = ({ navigation }: { navigation: any }) => {
                     ...styles.delete_icon
                   }}
                   size={20}
-                  onClick={(e: any) => remove(e, "group", id)}
+                  onClick={(event: any) => remove(event, "group", id)}
                 />
               </>}
             >
-              <Text style={{}}>
+              <Text>
                 {name}
               </Text>
             </List.Item>
             {openedGroup === id && Boolean(memberNotes?.length) && <List style={styles.member_notes_list}>
-              {memberNotes.map(({ id, content, title, date, groupId }: NoteType) =>
+              {memberNotes.map(({ id: memberId, content, title, date, groupId }: NoteType) =>
                 <List.Item
-                  key={id}
+                  key={memberId}
                   arrow={false}
-                  onClick={() => editNote({ id, content, title, date, groupId })}
+                  onClick={() => editNote({ id: memberId, content, title, date, groupId })}
                   style={{
                     ...styles.member_notes_list_item,
                     ...content.styles,
@@ -108,7 +125,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
                   extra={<AiFillDelete
                     style={styles.delete_icon}
                     size={20}
-                    onClick={(e: any) => remove(e, "note", id)}
+                    onClick={(e: any) => remove(e, "member", memberId, id)}
                   />}
                   description={content.data}
                 >

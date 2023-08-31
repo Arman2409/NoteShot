@@ -5,6 +5,7 @@ import { AddGroupProps } from "../../../../types/propTypes";
 import type { GroupType } from "../../../../types/types";
 import { NotesAndStatusContext } from "../../../../App";
 import { generateUniqueId } from "../../../Note/utils/functions";
+import styles from "./assets/styles";
 
 const AddGroup = ({visible, setVisible}:AddGroupProps) => {
     const { groups, setGroups } = useContext<any>(NotesAndStatusContext);
@@ -40,8 +41,19 @@ const AddGroup = ({visible, setVisible}:AddGroupProps) => {
                       clearable
                      />
                 </Form.Item>
-                 <Button type="submit">
+                 <Button 
+                  block
+                  type="submit"
+                  style={styles.add_button}
+                  >
                     Add Group
+                </Button>
+                 <Button 
+                  block
+                  style={styles.cancel_button}
+                  onClick={() => setVisible(false)}
+                  >
+                   Cancel
                 </Button>
             </Form>
         } />

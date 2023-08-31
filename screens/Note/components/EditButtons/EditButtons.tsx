@@ -4,7 +4,7 @@ import { LuDelete, LuPaintbrush2 } from "react-icons/lu";
 import { AiFillSmile, AiOutlineCaretDown } from "react-icons/ai";
 
 import globalStyles from "../../../../styles/globals";
-import styles from "./assests/styles";
+import styles from "./assets/styles";
 import { EditButtonsProps } from "../../../../types/propTypes";
 
 const EditButtons = ({setShowEmojis, setShowColorPicker}:EditButtonsProps) => {

@@ -7,7 +7,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import EmojiSelector from "react-native-emoji-selector";
 import { CompactPicker } from "react-color";
 
-import styles from "./assests/styles";
+import styles from "./assets/styles.ts";
 import type { GroupType, NoteType } from "../../types/types";
 import { NotesAndStatusContext } from '../../App.tsx';
 import { generateUniqueId } from "./utils/functions.ts";
@@ -237,7 +237,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             setMode("addToGroup")
         }
         if (currentNote.groupId) {
-            setShowGroup;
+            setShowGroup(true);
         }
         const { title: currentTitle, content: currentContent } = currentNote;
         if (currentTitle?.data) {
@@ -264,8 +264,8 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     return (
         <View style={styles.note_main}>
-            {showGroup && <Text>
-                {groups.filter(({ name, id }: GroupType) => id === currentNote.groupId)[0].name}
+            {showGroup && <Text style={{}}>
+                In group: {groups.filter(({ name, id }: GroupType) => id === currentNote.groupId)[0].name}
             </Text>}
             {showColorPicker &&
                 <View style={styles.color_picker}>
