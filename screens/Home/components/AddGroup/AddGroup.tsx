@@ -21,13 +21,12 @@ const AddGroup = ({visible, setVisible}:AddGroupProps) => {
                 ...groups,
             ])
         }))
+        setVisible(false);
     }, [setGroups])
 
     return (
         <Modal 
           visible={visible} 
-          closeOnAction
-          showCloseButton
           onClose={() => setVisible(false)}
           content={
             <Form 
@@ -38,12 +37,15 @@ const AddGroup = ({visible, setVisible}:AddGroupProps) => {
                     rules={[{required: true,  min: 2, message: "Minimum 2 letters for group name"} ]}
                 >
                     <Input 
+                      placeholder="Type the group's name"
+                      style={styles.add_input}
                       clearable
                      />
                 </Form.Item>
                  <Button 
                   block
                   type="submit"
+                  size="small"
                   style={styles.add_button}
                   >
                     Add Group
@@ -51,6 +53,7 @@ const AddGroup = ({visible, setVisible}:AddGroupProps) => {
                  <Button 
                   block
                   style={styles.cancel_button}
+                  size="small"
                   onClick={() => setVisible(false)}
                   >
                    Cancel

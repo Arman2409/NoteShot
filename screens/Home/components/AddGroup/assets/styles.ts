@@ -6,11 +6,16 @@ export default StyleSheet.create({
     add_button: {
         backgroundColor: variables.colorSuccess,
         color: variables.colorLight,
-        height: 25
+        marginBottom: 15
     },
     cancel_button: {
         backgroundColor: variables.colorWarning,
         color: variables.colorLight,
-        height: 25
     },
+    add_input: {
+        borderWidth: 2,
+        borderStyle: "solid",
+        borderColor: variables.colorGreyLight,
+        color: variables.colorGreyDark
+    }
 })

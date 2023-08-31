@@ -52,6 +52,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             });
             return;
         }
+        let notifyText = "";
         if (mode === "add") {
             generateUniqueId(notes, ((id: string) => {
                 setContextNotes((notes: NoteType[]) => [
@@ -70,6 +71,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                     ...notes,
                 ])
             }))
+            notifyText = "Note added";
         }
         if (mode === "addToGroup") {
             const allMembers = groups.filter(({ id }: GroupType) => id === addingGroupId)[0].memberNotes || [];
@@ -101,6 +103,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                     return group;
                 }))
             }))
+            notifyText = "Note added";
         }
         if (mode === "edit") {
             setContextNotes((notes: NoteType[]) => (
@@ -123,7 +126,9 @@ const Note = ({ navigation }: { navigation: any }) => {
                     return note;
                 })
             ))
+            notifyText = "Note edited";
         }
+        navigation.navigate("Home");
     }, [title, content, groups, addingGroupId, currentNote, noteDetails.current, mode])
 
     const changeProperty = useCallback((property: string, value: string) => {
