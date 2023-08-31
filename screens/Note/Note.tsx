@@ -13,6 +13,7 @@ import { NotesAndStatusContext } from '../../App.tsx';
 import { generateUniqueId } from "./utils/functions.ts";
 import EditButtons from "./components/EditButtons/EditButtons.tsx";
 import globals from "../../styles/globals.ts";
+import useShowNotification from "../../globals/hooks/useShowNotification.tsx";
 
 const styleOptions = [
     { key: '1', label: <PiTextUnderlineBold />, value: "underline" },
@@ -34,6 +35,8 @@ const Note = ({ navigation }: { navigation: any }) => {
     const noteDetails = useRef<any>({ title: { styles: {} }, content: { styles: {} } });
 
     const { notes, setNotes: setContextNotes, groups, setGroups, currentNote, addingGroupId } = useContext<any>(NotesAndStatusContext);
+
+    const {showNotification} = useShowNotification();
 
     const addEditNote = useCallback(() => {
         if (!title) {
@@ -128,6 +131,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             ))
             notifyText = "Note edited";
         }
+        showNotification(notifyText);
         navigation.navigate("Home");
     }, [title, content, groups, addingGroupId, currentNote, noteDetails.current, mode])
 
