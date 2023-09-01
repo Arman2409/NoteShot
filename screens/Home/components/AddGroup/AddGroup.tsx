@@ -4,7 +4,7 @@ import { Button, Form, Input, Modal } from "antd-mobile";
 import { AddGroupProps } from "../../../../types/propTypes";
 import type { GroupType } from "../../../../types/types";
 import { NotesAndStatusContext } from "../../../../App";
-import { generateUniqueId } from "../../../Note/utils/functions";
+import generateUniqueId from "../../../../globals/functions/generateUniqueId";
 import styles from "./assets/styles";
 
 const AddGroup = ({visible, setVisible}:AddGroupProps) => {

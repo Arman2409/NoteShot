@@ -1,6 +1,6 @@
 import bcrypt from "react-native-bcrypt";
 
-import { NoteType } from "../../../types/types";
+import { NoteType } from "../../types/types";
 
 export const generateUniqueId = (itemsArr: NoteType[], callback: Function) =>
     bcrypt.hash(itemsArr.length.toString(), 5, (err: Error, newId: string | undefined) => {
@@ -16,4 +16,6 @@ export const generateUniqueId = (itemsArr: NoteType[], callback: Function) =>
             })
         }
         return callback(newId);
-    }); 
+    });
+
+export default generateUniqueId;

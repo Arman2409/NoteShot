@@ -1,4 +1,6 @@
 export type EditButtonsProps = {
+    inGroup: Boolean
+    action: Function
     setShowEmojis:Function
     setShowColorPicker:Function
 }

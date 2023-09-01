@@ -12,6 +12,8 @@ import { NotesAndStatusContext } from '../../App.tsx';
 import type { GroupType, NoteType } from '../../types/types.ts';
 import { showDeleteModal } from './functions/functions.ts';
 import AddGroup from './components/AddGroup/AddGroup.tsx';
+import cutString from '../../globals/functions/cutString.ts';
+import globals from '../../styles/globals.ts';
 
 export const Home = ({ navigation }: { navigation: any }) => {
   const [addGroupStatus, setAddGroupStatus] = useState<boolean>(false);
@@ -57,6 +59,12 @@ export const Home = ({ navigation }: { navigation: any }) => {
     setAddingGroupId(id);
     navigation.navigate("Note");
   }, [setCurrentNote])
+
+  useEffect(() => {
+    navigation.setOptions({
+        headerStyle: globals.header
+    })
+}, [])
 
   return (
     <View style={styles.main}>
@@ -108,7 +116,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
               </>}
             >
               <Text>
-                {name}
+                {cutString(name, 30)}
               </Text>
             </List.Item>
             {openedGroup === id && Boolean(memberNotes?.length) && <List style={styles.member_notes_list}>
@@ -127,12 +135,12 @@ export const Home = ({ navigation }: { navigation: any }) => {
                     size={20}
                     onClick={(e: any) => remove(e, "member", memberId, id)}
                   />}
-                  description={content.data}
+                  description={cutString(content.data, 30)}
                 >
                   <Text style={{
                     ...title.styles
                   }}>
-                    {title.data}
+                    {cutString(title.data, 30)}
                   </Text>
                 </List.Item>)}
             </List>}
@@ -152,12 +160,12 @@ export const Home = ({ navigation }: { navigation: any }) => {
               size={20}
               onClick={(e: any) => remove(e, "note", id)}
             />}
-            description={content.data}
+            description={cutString(content.data, 30)}
           >
             <Text style={{
               ...title.styles
             }}>
-              {title.data}
+              {cutString(title.data, 30)}
             </Text>
           </List.Item>
         )}

@@ -8,12 +8,18 @@ export default StyleSheet.create({
         backgroundColor: variables.colorLight
     },
     actions_cont: {
-       width: "100%",
-       paddingVertical: 5,
-       backgroundColor: variables.colorGreyLight,
+        width: "100%",
+        paddingVertical: 5,
+        backgroundColor: variables.colorGreyLight,
+        position: "relative"
     },
     selector: {
-       margin: "auto",
+        margin: "auto",
+    },
+    status_cont: {
+        backgroundColor: variables.colorDark,
+        color: variables.colorLight,
+        textAlign: "right"
     },
     action_button: {
         width: 40,

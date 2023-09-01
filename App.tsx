@@ -5,55 +5,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './screens/Home/Home';
 import Note from './screens/Note/Note';
 import type { GroupType, NoteType } from './types/types';
+import { groups as initialGroups, notes as initialNotes} from "./initialData.json";
 
 const Stack = createNativeStackNavigator();
 
 export const NotesAndStatusContext = createContext({});
 
-const testNotes = [{
-    date: "29 Aug 2023",
-    id: "dnucksndkjdskjlcmdklvv",
-    groupId: null,
-    title: {
-        data: "fvfv",
-        styles: {
-            color: "red",
-            fontStyle: "italic"
-        }
-    },
-    content: {
-        data: "vfvfvfdc",
-        styles: {
-            color: "green"
-        }
-    }
-}]
-
-const testGroups = [{
-    id: "$2a$05$cVWpIDLXr9IHZC0W.xSaMOZJjk7VTmHF0HfKB6D9PPm3f7U6ZRn2e",
-    memberNotes: [
-        {
-            content: { data: 'fffffffffffff', styles: {} },
-            date: "Aug 31 2023",
-            groupId: "$2a$05$cVWpIDLXr9IHZC0W.xSaMOZJjk7VTmHF0HfKB6D9PPm3f7U6ZRn2e",
-            id: "$2a$05$Pja9jmhJPi9gESjeUBtF9.2y46/m00cXr5ApDMrom4dOYr7dDLwQC",
-            title: { data: 'ffffffff', styles: {} },
-        }
-    ],
-    name: "test group"
-}]
-
 const App = () => {
-    const [notes, setNotes] = useState<NoteType[]>(testNotes);
-    const [groups, setGroups] = useState<GroupType[]>(testGroups);
+    const [notes, setNotes] = useState<NoteType[]>(initialNotes);
+    const [groups, setGroups] = useState<GroupType[]>(initialGroups);
     const [addingGroupId, setAddingGroupId] = useState<string | null>(null);
     const [currentNote, setCurrentNote] = useState<NoteType>({} as NoteType);
-
-    useEffect(() => {
-        console.log({
-            groups
-        });
-    }, [groups]);
 
     return <NotesAndStatusContext.Provider value={{ notes, addingGroupId, setAddingGroupId, setNotes, currentNote, setCurrentNote, groups, setGroups }}>
         <NavigationContainer>

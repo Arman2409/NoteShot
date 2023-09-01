@@ -7,21 +7,12 @@ import globalStyles from "../../../../styles/globals";
 import styles from "./assets/styles";
 import { EditButtonsProps } from "../../../../types/propTypes";
 
-const EditButtons = ({setShowEmojis, setShowColorPicker}:EditButtonsProps) => {
+const EditButtons = ({inGroup, action, setShowEmojis, setShowColorPicker}:EditButtonsProps) => {
     return (
         <Grid
-        columns={4}
+        columns={3}
         gap={10}
         style={styles.edit_buttons_main}>
-        <Grid.Item
-            style={{
-                ...globalStyles.centered,
-                ...styles.action_button
-            }}>
-            <AiOutlineCaretDown
-                style={styles.action_icon}
-                size={25} />
-        </Grid.Item>
         <Grid.Item
             style={{
                 ...globalStyles.centered,

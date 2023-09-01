@@ -62,7 +62,7 @@ export default StyleSheet.create({
         color: variables.colorDark
     },
     member_notes_list: {
-        marginLeft: 5,
+        marginLeft: 10,
     },
     member_notes_list_item: {
         backgroundColor: variables.colorLight

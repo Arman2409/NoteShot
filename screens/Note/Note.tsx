@@ -10,7 +10,7 @@ import { CompactPicker } from "react-color";
 import styles from "./assets/styles.ts";
 import type { GroupType, NoteType } from "../../types/types";
 import { NotesAndStatusContext } from '../../App.tsx';
-import { generateUniqueId } from "./utils/functions.ts";
+import generateUniqueId from "../../globals/functions/generateUniqueId.ts";
 import EditButtons from "./components/EditButtons/EditButtons.tsx";
 import globals from "../../styles/globals.ts";
 import useShowNotification from "../../globals/hooks/useShowNotification.tsx";
@@ -36,7 +36,7 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     const { notes, setNotes: setContextNotes, groups, setGroups, currentNote, addingGroupId } = useContext<any>(NotesAndStatusContext);
 
-    const {showNotification} = useShowNotification();
+    const { showNotification } = useShowNotification();
 
     const addEditNote = useCallback(() => {
         if (!title) {
@@ -54,6 +54,15 @@ const Note = ({ navigation }: { navigation: any }) => {
                 confirmText: "Close"
             });
             return;
+        }
+        if (mode === "edit") {
+            const { title: currentTitle, content: currentContent } = currentNote;
+            const { data: titleData, styles: titleStyles } = currentTitle;
+            const { data: contentData, styles: contentStyles } = currentContent;
+            if (title === titleData && content === contentData) {
+                // ... Here might be code for checking style changes to allow just routing
+                return;
+            }
         }
         let notifyText = "";
         if (mode === "add") {
@@ -134,6 +143,13 @@ const Note = ({ navigation }: { navigation: any }) => {
         showNotification(notifyText);
         navigation.navigate("Home");
     }, [title, content, groups, addingGroupId, currentNote, noteDetails.current, mode])
+
+    const removeFromGroup = useCallback(() => {
+       const {id} = noteDetails.current;
+       const groupId = addingGroupId || noteDetails.current.groupId;
+    //    Here might be the logice for removing the note from the groups and adding to global notes
+    //    setGroups((groups:GroupType) => )
+    }, [groups, setGroups, addingGroupId, noteDetails.current])
 
     const changeProperty = useCallback((property: string, value: string) => {
         if (clickedType === "title") {
@@ -245,7 +261,7 @@ const Note = ({ navigation }: { navigation: any }) => {
         if (addingGroupId) {
             setMode("addToGroup")
         }
-        if (currentNote.groupId) {
+        if (currentNote.groupId || addingGroupId) {
             setShowGroup(true);
         }
         const { title: currentTitle, content: currentContent } = currentNote;
@@ -273,19 +289,11 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     return (
         <View style={styles.note_main}>
-            {showGroup && <Text style={{}}>
-                In group: {groups.filter(({ name, id }: GroupType) => id === currentNote.groupId)[0].name}
-            </Text>}
-            {showColorPicker &&
-                <View style={styles.color_picker}>
-                    <AiOutlineClose
-                        size={20}
-                        onClick={() => setShowColorPicker(false)}
-                        style={styles.color_picker_close_button} />
-                    <CompactPicker
-                        onChange={({ hex }) => changeProperty("color", hex)}
-                    />
-                </View>}
+            {showGroup && (
+                <Text style={styles.status_cont}>
+                    {currentNote.groupId ? `In group: ${groups.filter(({ id }: GroupType) => id === currentNote.groupId)[0].name}` :
+                        addingGroupId ? `Adding to group: ${groups.filter(({ id }: GroupType) => id === addingGroupId)[0].name}` : null}
+                </Text>)}
             <Modal
                 content={
                     <EmojiSelector
@@ -297,6 +305,16 @@ const Note = ({ navigation }: { navigation: any }) => {
                 onClose={() => setShowEmojis(false)}
             />
             <View style={styles.actions_cont}>
+                {showColorPicker &&
+                    <View style={styles.color_picker}>
+                        <AiOutlineClose
+                            size={20}
+                            onClick={() => setShowColorPicker(false)}
+                            style={styles.color_picker_close_button} />
+                        <CompactPicker
+                            onChange={({ hex }) => changeProperty("color", hex)}
+                        />
+                    </View>}
                 <Selector
                     options={styleOptions}
                     multiple={true}
@@ -305,6 +323,8 @@ const Note = ({ navigation }: { navigation: any }) => {
                     style={styles.selector}
                 />
                 <EditButtons
+                    inGroup={showGroup}
+                    action={() => {}}
                     setShowEmojis={setShowEmojis}
                     setShowColorPicker={setShowColorPicker} />
             </View>
