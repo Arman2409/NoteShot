@@ -10,7 +10,7 @@ import { LuPlus } from 'react-icons/lu';
 import styles from './assets/styles.ts';
 import { NotesAndStatusContext } from '../../App.tsx';
 import type { GroupType, NoteType } from '../../types/types.ts';
-import { showDeleteModal } from './functions/functions.ts';
+import { showModal } from '../../globals/functions/showModal.ts';
 import AddGroup from './components/AddGroup/AddGroup.tsx';
 import cutString from '../../globals/functions/cutString.ts';
 import globals from '../../styles/globals.ts';
@@ -35,11 +35,11 @@ export const Home = ({ navigation }: { navigation: any }) => {
   const remove = useCallback((e: Event, type: "note" | "group" | "member", id: string, parentId?: string) => {
     e.stopPropagation();
     switch (type) {
-      case "note": showDeleteModal("Note",() => setNotes((notes: NoteType[]) => notes.filter(({ id: noteId }) => id !== noteId)));
+      case "note": showModal("to delete the \ Note",() => setNotes((notes: NoteType[]) => notes.filter(({ id: noteId }) => id !== noteId)));
         break;
-      case "group": showDeleteModal("Group", () => setGroups((groups: GroupType[]) => groups.filter(({ id: groupId }) => id !== groupId)));
+      case "group": showModal("to delete the Group", () => setGroups((groups: GroupType[]) => groups.filter(({ id: groupId }) => id !== groupId)));
         break;
-      case "member": showDeleteModal("Note", () => setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
+      case "member": showModal("to delete the Note", () => setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
          if(group.id === parentId) {
            const { name, memberNotes} = group;
            return {
@@ -51,7 +51,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
          return group;
       })))
     }
-  }, [showDeleteModal, setNotes])
+  }, [showModal, setGroups, setNotes])
 
   const addToGroup = useCallback((e: Event, id: string) => {
     e.stopPropagation();
@@ -64,7 +64,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
     navigation.setOptions({
         headerStyle: globals.header
     })
-}, [])
+  }, [])
 
   return (
     <View style={styles.main}>
@@ -88,9 +88,12 @@ export const Home = ({ navigation }: { navigation: any }) => {
       <List
         header="My Notes"
         mode="card"
+        style={{
+          overflowY: "auto"
+        }}
       >
         {Boolean(groups.length) && groups.map(({ id, name, memberNotes }: GroupType) => (
-          <>
+          <div key={id}>
             <List.Item
               key={id}
               arrow={false}
@@ -144,10 +147,13 @@ export const Home = ({ navigation }: { navigation: any }) => {
                   </Text>
                 </List.Item>)}
             </List>}
-          </>
+          </div>
         ))}
-        {notes.map(({ id, content, title, date, groupId }: NoteType) =>
-          <List.Item
+        {notes.map(({ id, content, title, date, groupId }: NoteType) => {
+
+           console.log({id, title, groupId});
+           
+          return <List.Item
             key={id}
             arrow={false}
             onClick={() => editNote({ id, content, title, date, groupId })}
@@ -168,6 +174,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
               {cutString(title.data, 30)}
             </Text>
           </List.Item>
+        }
         )}
       </List>
       {!notes.length && !groups.length && <Text

@@ -16,7 +16,7 @@ const App = () => {
     const [groups, setGroups] = useState<GroupType[]>(initialGroups);
     const [addingGroupId, setAddingGroupId] = useState<string | null>(null);
     const [currentNote, setCurrentNote] = useState<NoteType>({} as NoteType);
-
+       
     return <NotesAndStatusContext.Provider value={{ notes, addingGroupId, setAddingGroupId, setNotes, currentNote, setCurrentNote, groups, setGroups }}>
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Home">

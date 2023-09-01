@@ -1,9 +1,9 @@
 import { Modal } from "antd-mobile"
 
-import styles from "../assets/styles"
+import { deleteModalStyles as styles } from "./assets/styles"
 
-export const showDeleteModal = (name: string, deleteFunction: any) => Modal.show({
-    content: `Are you sure to delete the ${name}`,
+export const showModal = (action: string, deleteFunction: any) => Modal.show({
+    content: `Are you sure to ${action}`,
     closeOnAction: true,
     actions: [
         {

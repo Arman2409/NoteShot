@@ -11,7 +11,8 @@ export default StyleSheet.create({
     add_buttons_cont: {
         position: "absolute",
         bottom: 15,
-        right: 15
+        right: 15,
+        zIndex: 4
     },
     add_button: {
         width: 55,
@@ -20,7 +21,6 @@ export default StyleSheet.create({
         marginRight: 10,
         paddingTop: 12,
         margin: 5,
-        zIndex: 2,
         backgroundColor: variables.colorLight,
         color: variables.colorDark,
         display: "flex",
@@ -49,14 +49,6 @@ export default StyleSheet.create({
     },
     delete_icon: {
         color: variables.colorWarning
-    },
-    delete_button: {
-       backgroundColor: variables.colorWarning,
-       color: variables.colorLight,
-    },
-    cancel_button : {
-        backgroundColor: variables.colorSuccess,
-        color: variables.colorLight,
     },
     add_icon: {
         color: variables.colorDark

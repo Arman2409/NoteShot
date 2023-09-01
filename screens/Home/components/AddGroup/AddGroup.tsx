@@ -1,7 +1,7 @@
 import { useCallback, useContext } from "react";
 import { Button, Form, Input, Modal } from "antd-mobile";
 
-import { AddGroupProps } from "../../../../types/propTypes";
+import type { AddGroupProps } from "../../../../types/propTypes";
 import type { GroupType } from "../../../../types/types";
 import { NotesAndStatusContext } from "../../../../App";
 import generateUniqueId from "../../../../globals/functions/generateUniqueId";

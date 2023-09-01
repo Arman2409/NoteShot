@@ -14,6 +14,7 @@ import generateUniqueId from "../../globals/functions/generateUniqueId.ts";
 import EditButtons from "./components/EditButtons/EditButtons.tsx";
 import globals from "../../styles/globals.ts";
 import useShowNotification from "../../globals/hooks/useShowNotification.tsx";
+import { showModal } from "../../globals/functions/showModal.ts";
 
 const styleOptions = [
     { key: '1', label: <PiTextUnderlineBold />, value: "underline" },
@@ -67,7 +68,7 @@ const Note = ({ navigation }: { navigation: any }) => {
         let notifyText = "";
         if (mode === "add") {
             generateUniqueId(notes, ((id: string) => {
-                setContextNotes((notes: NoteType[]) => [
+                setContextNotes((currents: NoteType[]) => [
                     {
                         id,
                         date: new Date().toString().slice(4, 15),
@@ -80,7 +81,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                             styles: noteDetails.current.content.styles
                         }
                     },
-                    ...notes,
+                    ...currents,
                 ])
             }))
             notifyText = "Note added";
@@ -147,9 +148,15 @@ const Note = ({ navigation }: { navigation: any }) => {
     const removeFromGroup = useCallback(() => {
        const {id} = noteDetails.current;
        const groupId = addingGroupId || noteDetails.current.groupId;
+       console.log({id, groupId});
+       
     //    Here might be the logice for removing the note from the groups and adding to global notes
     //    setGroups((groups:GroupType) => )
     }, [groups, setGroups, addingGroupId, noteDetails.current])
+
+    const addToGroup = useCallback(() => {
+
+    }, [])
 
     const changeProperty = useCallback((property: string, value: string) => {
         if (clickedType === "title") {
@@ -324,7 +331,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                 />
                 <EditButtons
                     inGroup={showGroup}
-                    action={() => {}}
+                    groupAction={showGroup ? () => showModal("Remove from the group",removeFromGroup) : addToGroup}
                     setShowEmojis={setShowEmojis}
                     setShowColorPicker={setShowColorPicker} />
             </View>
@@ -345,12 +352,13 @@ const Note = ({ navigation }: { navigation: any }) => {
             </Form>
             <Form layout='horizontal'>
                 <Form.Item
+                    arrow={false}
                     onClick={() => setClickedType("text")}>
                     <TextArea
                         ref={textArea}
                         value={content}
                         placeholder="Type your Note here"
-                        rows={14}
+                        rows={12}
                         onChange={(txt: string) => setContent(txt)}
                     />
                 </Form.Item>
