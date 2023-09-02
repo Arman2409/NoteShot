@@ -26,7 +26,7 @@ const EditButtons = ({ inGroup, groupAction, setShowEmojis, setShowColorPicker }
                     <CgFileAdd
                         size={25}
                         style={styles.action_icon}
-                        onClick={() => groupAction}
+                        onClick={groupAction as any}
                     />}
             </Grid.Item>
             <Grid.Item

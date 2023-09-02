@@ -4,6 +4,7 @@
     "strict": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "module": "NodeNext"
   }
 }

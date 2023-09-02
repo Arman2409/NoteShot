@@ -1,14 +1,13 @@
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 import { Button, Form, Input, Modal } from "antd-mobile";
 
-import type { AddGroupProps } from "../../../../types/propTypes";
+import type { ModalProps } from "../../../../types/propTypes";
 import type { GroupType } from "../../../../types/types";
-import { NotesAndStatusContext } from "../../../../App";
 import generateUniqueId from "../../../../globals/functions/generateUniqueId";
 import styles from "./assets/styles";
 
-const AddGroup = ({visible, setVisible}:AddGroupProps) => {
-    const { groups, setGroups } = useContext<any>(NotesAndStatusContext);
+const AddGroup = ({visible, setVisible,  groups, setGroups}:ModalProps
+       & {groups: GroupType[], setGroups: Function}) => {
 
     const addGroup = useCallback(({name}:GroupType) => {
         generateUniqueId(groups, ((id: string) => {

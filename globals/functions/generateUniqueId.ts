@@ -2,7 +2,7 @@ import bcrypt from "react-native-bcrypt";
 
 import { NoteType } from "../../types/types";
 
-export const generateUniqueId = (itemsArr: NoteType[], callback: Function) =>
+export const generateUniqueId = (itemsArr: any[], callback: Function) =>
     bcrypt.hash(itemsArr.length.toString(), 5, (err: Error, newId: string | undefined) => {
         if (err?.message) {
             console.error(err.message);

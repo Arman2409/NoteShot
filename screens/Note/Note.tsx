@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { Selector, TextArea, Input, Button, Form, Modal } from "antd-mobile";
 import { RxFontItalic } from "react-icons/rx";
@@ -8,13 +8,15 @@ import EmojiSelector from "react-native-emoji-selector";
 import { CompactPicker } from "react-color";
 
 import styles from "./assets/styles.ts";
+import globalStyles from "../../styles/globals.ts";
 import type { GroupType, NoteType } from "../../types/types";
-import { NotesAndStatusContext } from '../../App.tsx';
+import { NotesAndGroupsContext } from '../../App.tsx';
 import generateUniqueId from "../../globals/functions/generateUniqueId.ts";
-import EditButtons from "./components/EditButtons/EditButtons.tsx";
-import globals from "../../styles/globals.ts";
 import useShowNotification from "../../globals/hooks/useShowNotification.tsx";
-import { showModal } from "../../globals/functions/showModal.ts";
+import { showDelModal } from "../../globals/functions/showDelModal.ts";
+import EditButtons from "./components/EditButtons/EditButtons.tsx";
+import NoteEntry from "./components/NoteEntry/NoteEntry.tsx";
+const GroupsModal = lazy(() => import("./components/GroupsModal/GroupsModal.tsx"));
 
 const styleOptions = [
     { key: '1', label: <PiTextUnderlineBold />, value: "underline" },
@@ -29,13 +31,14 @@ const Note = ({ navigation }: { navigation: any }) => {
     const [showEmojis, setShowEmojis] = useState<boolean>(false);
     const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
     const [mode, setMode] = useState<"add" | "edit" | "addToGroup">("add");
-    const [showGroup, setShowGroup] = useState<boolean>(false);
+    const [showGroupStatus, setShowGroupStatus] = useState<boolean>(false);
+    const [showAddToGroupModal, setShowAddToGroupModal] = useState<boolean>(false);
 
     const titleInput = useRef<any>(null);
     const textArea = useRef<any>(null);
     const noteDetails = useRef<any>({ title: { styles: {} }, content: { styles: {} } });
 
-    const { notes, setNotes: setContextNotes, groups, setGroups, currentNote, addingGroupId } = useContext<any>(NotesAndStatusContext);
+    const { notes, setNotes, groups, setGroups, currentNote, setCurrentNote, addingGroupId, setAddingGroupId } = useContext<any>(NotesAndGroupsContext);
 
     const { showNotification } = useShowNotification();
 
@@ -44,7 +47,8 @@ const Note = ({ navigation }: { navigation: any }) => {
             Modal.alert({
                 content: "Please type title for the note",
                 closeOnMaskClick: true,
-                confirmText: "Close"
+                confirmText: "Close",
+                showCloseButton: true
             });
             return;
         }
@@ -68,7 +72,7 @@ const Note = ({ navigation }: { navigation: any }) => {
         let notifyText = "";
         if (mode === "add") {
             generateUniqueId(notes, ((id: string) => {
-                setContextNotes((currents: NoteType[]) => [
+                setNotes((currents: NoteType[]) => [
                     {
                         id,
                         date: new Date().toString().slice(4, 15),
@@ -119,7 +123,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             notifyText = "Note added";
         }
         if (mode === "edit") {
-            setContextNotes((notes: NoteType[]) => (
+            setNotes((notes: NoteType[]) => (
                 notes.map((note: NoteType) => {
                     const { id } = note;
                     if (id === currentNote.id) {
@@ -146,17 +150,72 @@ const Note = ({ navigation }: { navigation: any }) => {
     }, [title, content, groups, addingGroupId, currentNote, noteDetails.current, mode])
 
     const removeFromGroup = useCallback(() => {
-       const {id} = noteDetails.current;
-       const groupId = addingGroupId || noteDetails.current.groupId;
-       console.log({id, groupId});
-       
-    //    Here might be the logice for removing the note from the groups and adding to global notes
-    //    setGroups((groups:GroupType) => )
-    }, [groups, setGroups, addingGroupId, noteDetails.current])
+        if (mode === "addToGroup") {
+            setMode("add");
+            setAddingGroupId(null);
+        }
+        if (mode === "edit") {
+            const { id: currentId } = noteDetails.current;
+            const removeGroupId = addingGroupId || noteDetails.current.groupId;
+            setCurrentNote((current: NoteType) => {
+                noteDetails.current = {
+                    ...current,
+                    groupId: null
+                };
+                return ({
+                    ...current,
+                    groupId: null
+                })
+            }
+            )
+            setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
+                if (group.id === removeGroupId) {
+                    return ({
+                        ...group,
+                        memberNotes: group.memberNotes.filter(({ id }) => id !== currentId)
+                    })
+                }
+                return group;
+            }))
+            setNotes((notes: NoteType[]) => ([
+                noteDetails.current,
+                ...notes
+            ]))
 
-    const addToGroup = useCallback(() => {
+        }
+    }, [groups, mode, setGroups, setNotes, addingGroupId, noteDetails.current])
 
-    }, [])
+    const addToGroup = useCallback((groupId: string) => {
+        if (mode === "add") {
+            setMode("addToGroup");
+            setAddingGroupId(groupId);
+        }
+        if (mode === "edit") {
+            let note: NoteType;
+            setCurrentNote((current: NoteType) => {
+                note = {
+                    ...current,
+                    groupId
+                };
+                noteDetails.current = note;
+                return note;
+            })
+            setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
+                if (group.id === groupId) {
+                    return ({
+                        ...group,
+                        memberNotes: [
+                            ...group.memberNotes,
+                            note
+                        ]
+                    })
+                }
+                return group;
+            }))
+            setNotes((notes: NoteType[]) => notes.filter(({ id }: NoteType) => id !== noteDetails.current.id))
+        }
+
+    }, [mode, setGroups, setNotes, setCurrentNote])
 
     const changeProperty = useCallback((property: string, value: string) => {
         if (clickedType === "title") {
@@ -266,10 +325,10 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     useEffect(() => {
         if (addingGroupId) {
-            setMode("addToGroup")
+            setMode("addToGroup");
         }
         if (currentNote.groupId || addingGroupId) {
-            setShowGroup(true);
+            setShowGroupStatus(true);
         }
         const { title: currentTitle, content: currentContent } = currentNote;
         if (currentTitle?.data) {
@@ -290,13 +349,13 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerStyle: globals.header
+            headerStyle: globalStyles.header
         })
     }, [])
 
     return (
         <View style={styles.note_main}>
-            {showGroup && (
+            {showGroupStatus && (
                 <Text style={styles.status_cont}>
                     {currentNote.groupId ? `In group: ${groups.filter(({ id }: GroupType) => id === currentNote.groupId)[0].name}` :
                         addingGroupId ? `Adding to group: ${groups.filter(({ id }: GroupType) => id === addingGroupId)[0].name}` : null}
@@ -311,6 +370,14 @@ const Note = ({ navigation }: { navigation: any }) => {
                 visible={showEmojis}
                 onClose={() => setShowEmojis(false)}
             />
+            <Suspense fallback="...">
+                <GroupsModal
+                    visible={showAddToGroupModal}
+                    setVisible={setShowAddToGroupModal}
+                    action={addToGroup}
+                    groups={groups}
+                />
+            </Suspense>
             <View style={styles.actions_cont}>
                 {showColorPicker &&
                     <View style={styles.color_picker}>
@@ -330,39 +397,26 @@ const Note = ({ navigation }: { navigation: any }) => {
                     style={styles.selector}
                 />
                 <EditButtons
-                    inGroup={showGroup}
-                    groupAction={showGroup ? () => showModal("Remove from the group",removeFromGroup) : addToGroup}
+                    inGroup={showGroupStatus}
+                    groupAction={() => {
+                        if (showGroupStatus) {
+                            showDelModal("Remove from the group", removeFromGroup, "Remove")
+                            return;
+                        }
+                        setShowAddToGroupModal(true);
+                    }}
                     setShowEmojis={setShowEmojis}
                     setShowColorPicker={setShowColorPicker} />
             </View>
-            <Form layout='horizontal'>
-                <Form.Item
-                    label='Title'
-                    arrow={false}
-                    onClick={() => setClickedType("title")}
-                >
-                    <Input
-                        placeholder='Title for the note'
-                        clearable
-                        value={title}
-                        ref={titleInput}
-                        onChange={(val: string) => setTitle(val)}
-                    />
-                </Form.Item>
-            </Form>
-            <Form layout='horizontal'>
-                <Form.Item
-                    arrow={false}
-                    onClick={() => setClickedType("text")}>
-                    <TextArea
-                        ref={textArea}
-                        value={content}
-                        placeholder="Type your Note here"
-                        rows={12}
-                        onChange={(txt: string) => setContent(txt)}
-                    />
-                </Form.Item>
-            </Form>
+            <NoteEntry
+                title={title}
+                setTitle={setTitle}
+                titleRef={titleInput}
+                content={content}
+                setContent={setContent}
+                contentRef={textArea}
+                setClickedType={setClickedType}
+            />
             <Button
                 block
                 color="success"

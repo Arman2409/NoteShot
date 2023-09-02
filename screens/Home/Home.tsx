@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { Suspense, lazy, useCallback, useContext, useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { Button, List } from 'antd-mobile';
 import { AiFillDelete } from 'react-icons/ai';
@@ -8,17 +8,17 @@ import { BsFileEarmarkPlus } from "react-icons/bs";
 import { LuPlus } from 'react-icons/lu';
 
 import styles from './assets/styles.ts';
-import { NotesAndStatusContext } from '../../App.tsx';
+import { NotesAndGroupsContext } from '../../App.tsx';
 import type { GroupType, NoteType } from '../../types/types.ts';
-import { showModal } from '../../globals/functions/showModal.ts';
-import AddGroup from './components/AddGroup/AddGroup.tsx';
+import { showDelModal } from '../../globals/functions/showDelModal.ts';
 import cutString from '../../globals/functions/cutString.ts';
 import globals from '../../styles/globals.ts';
+const AddGroup = lazy(() => import('./components/AddGroup/AddGroup.tsx'));
 
 export const Home = ({ navigation }: { navigation: any }) => {
   const [addGroupStatus, setAddGroupStatus] = useState<boolean>(false);
   const [openedGroup, setOpenedGroup] = useState<string>("");
-  const { setCurrentNote, setAddingGroupId, groups, setGroups, notes, setNotes } = useContext<any>(NotesAndStatusContext);
+  const { setCurrentNote, setAddingGroupId, groups, setGroups, notes, setNotes } = useContext<any>(NotesAndGroupsContext);
 
   const editNote = useCallback((note: NoteType) => {
     setCurrentNote(note);
@@ -35,23 +35,23 @@ export const Home = ({ navigation }: { navigation: any }) => {
   const remove = useCallback((e: Event, type: "note" | "group" | "member", id: string, parentId?: string) => {
     e.stopPropagation();
     switch (type) {
-      case "note": showModal("to delete the \ Note",() => setNotes((notes: NoteType[]) => notes.filter(({ id: noteId }) => id !== noteId)));
+      case "note": showDelModal("to delete the \ Note", () => setNotes((notes: NoteType[]) => notes.filter(({ id: noteId }) => id !== noteId)));
         break;
-      case "group": showModal("to delete the Group", () => setGroups((groups: GroupType[]) => groups.filter(({ id: groupId }) => id !== groupId)));
+      case "group": showDelModal("to delete the Group", () => setGroups((groups: GroupType[]) => groups.filter(({ id: groupId }) => id !== groupId)));
         break;
-      case "member": showModal("to delete the Note", () => setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
-         if(group.id === parentId) {
-           const { name, memberNotes} = group;
-           return {
+      case "member": showDelModal("to delete the Note", () => setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
+        if (group.id === parentId) {
+          const { name, memberNotes } = group;
+          return {
             id: parentId,
             name,
-            memberNotes: memberNotes.filter((note:NoteType) => note.id !== id),
-           }
-         }
-         return group;
+            memberNotes: memberNotes.filter((note: NoteType) => note.id !== id),
+          }
+        }
+        return group;
       })))
     }
-  }, [showModal, setGroups, setNotes])
+  }, [showDelModal, setGroups, setNotes])
 
   const addToGroup = useCallback((e: Event, id: string) => {
     e.stopPropagation();
@@ -62,7 +62,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
 
   useEffect(() => {
     navigation.setOptions({
-        headerStyle: globals.header
+      headerStyle: globals.header
     })
   }, [])
 
@@ -82,9 +82,13 @@ export const Home = ({ navigation }: { navigation: any }) => {
           <LuPlus />
         </Button>
       </View>
-      <AddGroup
-        setVisible={setAddGroupStatus}
-        visible={addGroupStatus} />
+      <Suspense fallback={"..."}>
+        <AddGroup
+          groups={groups}
+          setGroups={setGroups}
+          setVisible={setAddGroupStatus}
+          visible={addGroupStatus} />
+      </Suspense>
       <List
         header="My Notes"
         mode="card"
@@ -151,8 +155,8 @@ export const Home = ({ navigation }: { navigation: any }) => {
         ))}
         {notes.map(({ id, content, title, date, groupId }: NoteType) => {
 
-           console.log({id, title, groupId});
-           
+          console.log({ id, title, groupId });
+
           return <List.Item
             key={id}
             arrow={false}

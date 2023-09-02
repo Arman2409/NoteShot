@@ -11,7 +11,7 @@ export default StyleSheet.create({
     add_buttons_cont: {
         position: "absolute",
         bottom: 15,
-        right: 15,
+        left: 15,
         zIndex: 4
     },
     add_button: {
