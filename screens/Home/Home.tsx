@@ -8,11 +8,11 @@ import { BsFileEarmarkPlus } from "react-icons/bs";
 import { LuPlus } from 'react-icons/lu';
 
 import styles from './assets/styles.ts';
+import globalStyles from '../../styles/globals.ts';
 import { NotesAndGroupsContext } from '../../App.tsx';
 import type { GroupType, NoteType } from '../../types/types.ts';
 import { showDelModal } from '../../globals/functions/showDelModal.ts';
 import cutString from '../../globals/functions/cutString.ts';
-import globals from '../../styles/globals.ts';
 const AddGroup = lazy(() => import('./components/AddGroup/AddGroup.tsx'));
 
 export const Home = ({ navigation }: { navigation: any }) => {
@@ -62,7 +62,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerStyle: globals.header
+      headerStyle: globalStyles.header
     })
   }, [])
 
@@ -92,9 +92,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
       <List
         header="My Notes"
         mode="card"
-        style={{
-          overflowY: "auto"
-        }}
+        style={styles.notes_list}
       >
         {Boolean(groups.length) && groups.map(({ id, name, memberNotes }: GroupType) => (
           <div key={id}>
@@ -127,7 +125,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
               </Text>
             </List.Item>
             {openedGroup === id && Boolean(memberNotes?.length) && <List style={styles.member_notes_list}>
-              {memberNotes.map(({ id: memberId, content, title, date, groupId }: NoteType) =>
+              {memberNotes.map(({ id: memberId, content, title, date, groupId }: NoteType) => (
                 <List.Item
                   key={memberId}
                   arrow={false}
@@ -145,40 +143,37 @@ export const Home = ({ navigation }: { navigation: any }) => {
                   description={cutString(content.data, 30)}
                 >
                   <Text style={{
+                    textDecorationStyle: "none",
+                    underline: "none",
                     ...title.styles
                   }}>
                     {cutString(title.data, 30)}
                   </Text>
-                </List.Item>)}
+                </List.Item>)
+              )}
             </List>}
           </div>
         ))}
         {notes.map(({ id, content, title, date, groupId }: NoteType) => {
-
-          console.log({ id, title, groupId });
-
-          return <List.Item
-            key={id}
-            arrow={false}
-            onClick={() => editNote({ id, content, title, date, groupId })}
-            style={{
-              ...content.styles,
-              "--adm-color-weak": content.styles?.color
-            } as any}
-            extra={<AiFillDelete
-              style={styles.delete_icon}
-              size={20}
-              onClick={(e: any) => remove(e, "note", id)}
-            />}
-            description={cutString(content.data, 30)}
-          >
-            <Text style={{
-              ...title.styles
-            }}>
-              {cutString(title.data, 30)}
-            </Text>
-          </List.Item>
-        }
+        return <List.Item
+          key={id}
+          arrow={false}
+          onClick={() => editNote({ id, content, title, date, groupId })}
+          style={{
+            ...content.styles,
+            "--adm-color-weak": content.styles?.color
+          } as any}
+          extra={<AiFillDelete
+            style={styles.delete_icon}
+            size={20}
+            onClick={(e: any) => remove(e, "note", id)}
+          />}
+          description={cutString(content.data, 30)}
+        >
+          <Text style={title.styles}>
+            {cutString(title.data, 30)}
+          </Text>
+        </List.Item>}
         )}
       </List>
       {!notes.length && !groups.length && <Text

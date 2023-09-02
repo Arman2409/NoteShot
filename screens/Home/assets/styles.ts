@@ -8,6 +8,9 @@ export default StyleSheet.create({
         height: "100%",
         width: "100%"
     },
+    notes_list: {
+        overflow: "scroll"
+    },
     add_buttons_cont: {
         position: "absolute",
         bottom: 15,

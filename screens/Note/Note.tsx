@@ -1,6 +1,6 @@
 import { Suspense, lazy, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
-import { Selector, TextArea, Input, Button, Form, Modal } from "antd-mobile";
+import { Selector, Button, Modal } from "antd-mobile";
 import { RxFontItalic } from "react-icons/rx";
 import { PiTextUnderlineBold } from "react-icons/pi";
 import { AiOutlineClose } from "react-icons/ai";
@@ -60,15 +60,15 @@ const Note = ({ navigation }: { navigation: any }) => {
             });
             return;
         }
-        if (mode === "edit") {
-            const { title: currentTitle, content: currentContent } = currentNote;
-            const { data: titleData, styles: titleStyles } = currentTitle;
-            const { data: contentData, styles: contentStyles } = currentContent;
-            if (title === titleData && content === contentData) {
-                // ... Here might be code for checking style changes to allow just routing
-                return;
-            }
-        }
+        // if (mode === "edit") {
+        //     const { title: currentTitle, content: currentContent } = currentNote;
+        //     const { data: titleData, styles: titleStyles } = currentTitle;
+        //     const { data: contentData, styles: contentStyles } = currentContent;
+        //     if (title === titleData && content === contentData) {
+        //         // ... Here might be code for checking style changes to allow just routing
+        //         return;
+        //     }
+        // }
         let notifyText = "";
         if (mode === "add") {
             generateUniqueId(notes, ((id: string) => {
@@ -123,31 +123,57 @@ const Note = ({ navigation }: { navigation: any }) => {
             notifyText = "Note added";
         }
         if (mode === "edit") {
-            setNotes((notes: NoteType[]) => (
-                notes.map((note: NoteType) => {
-                    const { id } = note;
-                    if (id === currentNote.id) {
-                        return ({
-                            id,
-                            date: new Date().toString().slice(4, 15),
-                            title: {
-                                data: title,
-                                styles: noteDetails.current.title.styles
-                            },
-                            content: {
-                                data: content,
-                                styles: noteDetails.current.content.styles
-                            }
-                        })
-                    }
-                    return note;
-                })
-            ))
+            if (noteDetails.current.groupId) {
+                setGroups((groups: GroupType[]) => (
+                    groups.map((group: GroupType) => {
+                        const { id } = group;
+                        if (id === noteDetails.current.groupId) {
+                            return ({
+                                ...group,
+                                memberNotes: group.memberNotes.map((note: NoteType) => ({
+                                    id,
+                                    date: new Date().toString().slice(4, 15),
+                                    title: {
+                                        data: title,
+                                        styles: noteDetails.current.title.styles
+                                    },
+                                    content: {
+                                        data: content,
+                                        styles: noteDetails.current.content.styles
+                                    }
+                                }))
+                            })
+                        }
+                        return group;
+                    })
+                ))
+            } else {
+                setNotes((notes: NoteType[]) => (
+                    notes.map((note: NoteType) => {
+                        const { id } = note;
+                        if (id === currentNote.id) {
+                            return ({
+                                id,
+                                date: new Date().toString().slice(4, 15),
+                                title: {
+                                    data: title,
+                                    styles: noteDetails.current.title.styles
+                                },
+                                content: {
+                                    data: content,
+                                    styles: noteDetails.current.content.styles
+                                }
+                            })
+                        }
+                        return note;
+                    })
+                ))
+            }
             notifyText = "Note edited";
         }
         showNotification(notifyText);
         navigation.navigate("Home");
-    }, [title, content, groups, addingGroupId, currentNote, noteDetails.current, mode])
+    }, [title, content, setNotes, setGroups, groups, addingGroupId, currentNote, noteDetails.current, mode])
 
     const removeFromGroup = useCallback(() => {
         if (mode === "addToGroup") {
@@ -223,24 +249,28 @@ const Note = ({ navigation }: { navigation: any }) => {
             noteDetails.current = {
                 ...noteDetails.current,
                 title: {
+                    data: noteDetails.current.title.data,
                     styles: {
                         ...noteDetails.current.title.styles,
                         [property]: value
                     }
                 }
             }
+            setCurrentNote(noteDetails.current);
         }
         if (clickedType === "text") {
             textArea.current.nativeElement.style[property] = value;
             noteDetails.current = {
                 ...noteDetails.current,
                 content: {
+                    data: noteDetails.current.content.data,
                     styles: {
                         ...noteDetails.current?.content?.styles,
                         [property]: value
                     },
                 }
             }
+            setCurrentNote(noteDetails.current);
         }
     }, [textArea, titleInput, noteDetails.current, clickedType])
 
@@ -323,6 +353,17 @@ const Note = ({ navigation }: { navigation: any }) => {
         navigation.navigate("Home")
     }, [title, content, currentNote])
 
+    const getGroupName = useCallback(() => {
+        if (addingGroupId) {
+            return groups.find(({ id }: GroupType) => {
+                return id === addingGroupId
+            })[0].name || "";
+        }
+        return groups.find(({ id }: GroupType) => {
+            return id === noteDetails.current.groupId
+        })[0].name || "";
+    }, [addingGroupId, noteDetails.current, groups])
+
     useEffect(() => {
         if (addingGroupId) {
             setMode("addToGroup");
@@ -345,7 +386,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             setMode("edit");
             noteDetails.current = currentNote;
         }
-    }, [currentNote, addingGroupId, setTitle, setContent])
+    }, [currentNote, noteDetails.current, addingGroupId, setMode, setTitle, setContent])
 
     useEffect(() => {
         navigation.setOptions({
@@ -362,9 +403,11 @@ const Note = ({ navigation }: { navigation: any }) => {
                 </Text>)}
             <Modal
                 content={
-                    <EmojiSelector
-                        showSearchBar={false}
-                        onEmojiSelected={addEmoji} />
+                    <div style={styles.emojis_cont}>
+                        <EmojiSelector
+                            showSearchBar={false}
+                            onEmojiSelected={addEmoji} />
+                    </div>
                 }
                 showCloseButton={true}
                 visible={showEmojis}
@@ -400,7 +443,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                     inGroup={showGroupStatus}
                     groupAction={() => {
                         if (showGroupStatus) {
-                            showDelModal("Remove from the group", removeFromGroup, "Remove")
+                            showDelModal(`Remove from the group ${getGroupName()}`, removeFromGroup, "Remove")
                             return;
                         }
                         setShowAddToGroupModal(true);

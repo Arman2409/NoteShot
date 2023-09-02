@@ -9,9 +9,11 @@ export default StyleSheet.create({
     },
     actions_cont: {
         width: "100%",
-        paddingVertical: 5,
         backgroundColor: variables.colorGreyLight,
-        position: "relative"
+        position: "relative",
+    },
+    emojis_cont: {
+       padding: 10
     },
     selector: {
         margin: "auto",
@@ -34,6 +36,7 @@ export default StyleSheet.create({
         position: "absolute",
         zIndex: 2,
         backgroundColor: "white",
+        width: "100%"
     },
     color_picker_close_button: {
         marginLeft: "auto"

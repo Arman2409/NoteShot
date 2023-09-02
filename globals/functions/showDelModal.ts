@@ -22,4 +22,4 @@ export const showDelModal = (
                 onClick: () => Modal.clear()
             },
         ]
-    })
+})
