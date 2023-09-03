@@ -61,16 +61,6 @@ const Note = ({ navigation }: { navigation: any }) => {
             });
             return;
         }
-        // code for checking style changes might go here in future
-        // if (mode === "edit") {
-        //     const { title: currentTitle, content: currentContent } = currentNote;
-        //     const { data: titleData, styles: titleStyles } = currentTitle;
-        //     const { data: contentData, styles: contentStyles } = currentContent;
-        //     if (title === titleData && content === contentData) {
-        //         // ... Here might be code for checking style changes to allow just routing
-        //         return;
-        //     }
-        // }
         let notifyText = "";
         if (mode === "add") {
             generateUniqueId(notes, ((id: string) => {
@@ -303,42 +293,32 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     const addEmoji = useCallback((emoji: string) => {
         if (clickedType === "text") {
-            let newContent:string;
-            setContent(current => {
-                newContent = current + emoji;
-                return newContent;
-            })
-            setCurrentNote((curr:NoteType) => {
-              const note = {
-                ...curr,
-                content: {
-                    ...curr.content,
-                    data: newContent
+            setContent(current =>  {
+                const newContent = current + emoji;
+                noteDetails.current = {
+                    ...noteDetails.current,
+                    content: {
+                        styles: {...noteDetails.current.styles},
+                        data: newContent
+                    }
                 }
-              }
-              noteDetails.current = note;
-              return note;
-            }) 
+                return  newContent;
+            });
         }
         if (clickedType === "title") {
-            let newTitle:string;
-            setTitle(current => {
-                newTitle = current;
-                return newTitle;
-            })
-            setCurrentNote((curr:NoteType) => {
-              const note = {
-                ...curr,
-                content: {
-                    ...curr.content,
-                    data: newTitle
+            setTitle(current =>  {
+                const newTitle = current + emoji;
+                noteDetails.current = {
+                    ...noteDetails.current,
+                    title: {
+                        styles: {...noteDetails.current.title.styles},
+                        data: newTitle
+                    }
                 }
-              }
-              noteDetails.current = note;
-              return note;
-            }) 
+                return  newTitle;
+            });
         }
-    }, [clickedType, content, title])
+    }, [clickedType, setTitle, noteDetails.current, setContent])
 
     const cancelNote = useCallback(() => {
         if (mode === "add" || mode === "addToGroup") {
@@ -389,11 +369,11 @@ const Note = ({ navigation }: { navigation: any }) => {
         if (addingGroupId) {
             return groups.find(({ id }: GroupType) => {
                 return id === addingGroupId
-            })[0].name || "";
+            }).name || "";
         }
         return groups.find(({ id }: GroupType) => {
             return id === noteDetails.current.groupId
-        })[0].name || "";
+        }).name || "";
     }, [addingGroupId, noteDetails.current, groups])
 
     useEffect(() => {
@@ -418,7 +398,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             setMode("edit");
             noteDetails.current = currentNote;
         }
-    }, [currentNote, noteDetails.current, addingGroupId, setMode, setTitle, setContent])
+    }, [currentNote, addingGroupId, setMode, setTitle, setContent])
 
     useEffect(() => {
         navigation.setOptions({

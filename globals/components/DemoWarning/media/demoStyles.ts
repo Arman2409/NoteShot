@@ -17,8 +17,9 @@ export default StyleSheet.create({
     },
     warning_cont: {
         ...globals.centered,
-        width: 300,
+        width: 350,
         height: 200,
+        padding: 10,
         backgroundColor: variables.colorDark,
         opacity: 0.8,
         color: variables.colorLight,
