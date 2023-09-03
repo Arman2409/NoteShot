@@ -16,6 +16,7 @@ import useShowNotification from "../../globals/hooks/useShowNotification.tsx";
 import { showDelModal } from "../../globals/functions/showDelModal.ts";
 import EditButtons from "./components/EditButtons/EditButtons.tsx";
 import NoteEntry from "./components/NoteEntry/NoteEntry.tsx";
+import variables from "../../styles/variables.ts";
 const GroupsModal = lazy(() => import("./components/GroupsModal/GroupsModal.tsx"));
 
 const styleOptions = [
@@ -302,10 +303,40 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     const addEmoji = useCallback((emoji: string) => {
         if (clickedType === "text") {
-            setContent(current => current + emoji)
+            let newContent:string;
+            setContent(current => {
+                newContent = current + emoji;
+                return newContent;
+            })
+            setCurrentNote((curr:NoteType) => {
+              const note = {
+                ...curr,
+                content: {
+                    ...curr.content,
+                    data: newContent
+                }
+              }
+              noteDetails.current = note;
+              return note;
+            }) 
         }
         if (clickedType === "title") {
-            setTitle(current => current + emoji)
+            let newTitle:string;
+            setTitle(current => {
+                newTitle = current;
+                return newTitle;
+            })
+            setCurrentNote((curr:NoteType) => {
+              const note = {
+                ...curr,
+                content: {
+                    ...curr.content,
+                    data: newTitle
+                }
+              }
+              noteDetails.current = note;
+              return note;
+            }) 
         }
     }, [clickedType, content, title])
 
@@ -404,7 +435,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                 </Text>)}
             <Modal
                 content={
-                    <div style={styles.emojis_cont}>
+                    showEmojis && <div style={styles.emojis_cont}>
                         <EmojiSelector
                             showSearchBar={false}
                             onEmojiSelected={addEmoji} />
@@ -412,7 +443,9 @@ const Note = ({ navigation }: { navigation: any }) => {
                 }
                 showCloseButton={true}
                 visible={showEmojis}
-                onClose={() => setShowEmojis(false)}
+                onClose={() => 
+                    setShowEmojis(false)
+                }
             />
             <Suspense fallback="...">
                 <GroupsModal
@@ -438,7 +471,13 @@ const Note = ({ navigation }: { navigation: any }) => {
                     multiple={true}
                     onChange={changeStyles}
                     showCheckMark={false}
-                    style={styles.selector}
+                    style={{
+                        ...styles.selector,
+                        "--color": variables.colorDark,
+                        "--checked-color": variables.colorDark,
+                        "--text-color": variables.colorLight,
+                        "--checked-text-color": variables.colorLight,
+                     }}
                 />
                 <EditButtons
                     inGroup={showGroupStatus}

@@ -8,8 +8,7 @@ import globalStyles from "../../../../styles/globals";
 import styles from "./media/editButtonsStyles";
 import type { EditButtonsProps } from "../../../../types/propTypes";
 
-const EditButtons = ({ inGroup, groupAction, setShowEmojis, setShowColorPicker }: EditButtonsProps) => {
-    return (
+const EditButtons = ({ inGroup, groupAction, setShowEmojis, setShowColorPicker }: EditButtonsProps) => (
         <Grid
             columns={3}
             gap={15}
@@ -53,7 +52,6 @@ const EditButtons = ({ inGroup, groupAction, setShowEmojis, setShowColorPicker }
                     size={25} />
             </Grid.Item>
         </Grid>
-    )
-}
+)
 
 export default EditButtons;
