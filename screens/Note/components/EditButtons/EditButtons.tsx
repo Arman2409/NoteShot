@@ -1,18 +1,18 @@
 
 import { Grid } from "antd-mobile";
-import { LuDelete, LuPaintbrush2 } from "react-icons/lu";
+import { LuPaintbrush2 } from "react-icons/lu";
 import { AiFillSmile } from "react-icons/ai";
 import { CgFileRemove, CgFileAdd } from "react-icons/cg";
 
 import globalStyles from "../../../../styles/globals";
-import styles from "./assets/styles";
+import styles from "./media/editButtonsStyles";
 import type { EditButtonsProps } from "../../../../types/propTypes";
 
 const EditButtons = ({ inGroup, groupAction, setShowEmojis, setShowColorPicker }: EditButtonsProps) => {
     return (
         <Grid
             columns={3}
-            gap={10}
+            gap={15}
             style={styles.edit_buttons_main}>
             <Grid.Item
                 style={{

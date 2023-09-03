@@ -1,11 +1,12 @@
 import { StyleSheet } from "react-native";
+
 import variables from "../../../styles/variables";
 
 export default StyleSheet.create({
     note_main: {
         height: "100%",
         width: "100%",
-        backgroundColor: variables.colorLight
+        backgroundColor: variables.colorLight,
     },
     actions_cont: {
         width: "100%",

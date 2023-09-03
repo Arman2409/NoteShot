@@ -1,9 +1,9 @@
 import { Button, List, Modal } from "antd-mobile";
 import { IoDocumentsOutline } from "react-icons/io5";
 
-import { ModalProps } from "../../../../types/propTypes";
-import { GroupType } from "../../../../types/types";
-import styles from "./assets/styles";
+import styles from "./media/groupsModalStyles";
+import type { ModalProps } from "../../../../types/propTypes";
+import type { GroupType } from "../../../../types/types";
 
 const GroupsModal = ({ visible, setVisible, action, groups }:
     ModalProps & { action: Function, groups: GroupType[] }) => {

@@ -1,4 +1,6 @@
-import { Ref } from "react"
+import { Ref } from "react";
+
+import type { NoteType } from "./types";
 
 export type EditButtonsProps = {
     inGroup: Boolean
@@ -20,4 +22,16 @@ export type NoteEntryProps = {
     setContent: Function
     contentRef: Ref<any>
     setClickedType: Function
+}
+
+export type DemoWarningProps = {
+    warning: string
+}
+
+export type NotesListProps = {
+    areMembers: boolean
+    notes: NoteType[]
+    editNote: Function
+    remove: Function,
+    groupId?: string
 }

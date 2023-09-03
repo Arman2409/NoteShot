@@ -7,7 +7,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import EmojiSelector from "react-native-emoji-selector";
 import { CompactPicker } from "react-color";
 
-import styles from "./assets/styles.ts";
+import styles from "./media/noteStyles.ts";
 import globalStyles from "../../styles/globals.ts";
 import type { GroupType, NoteType } from "../../types/types";
 import { NotesAndGroupsContext } from '../../App.tsx';
@@ -60,6 +60,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             });
             return;
         }
+        // code for checking style changes might go here in future
         // if (mode === "edit") {
         //     const { title: currentTitle, content: currentContent } = currentNote;
         //     const { data: titleData, styles: titleStyles } = currentTitle;

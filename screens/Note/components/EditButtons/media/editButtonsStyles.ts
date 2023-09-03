@@ -6,13 +6,13 @@ export default StyleSheet.create({
         width: 40,
         height: 40,
         backgroundColor: variables.colorGreyDark,
-        borderRadius: 10
+        borderRadius: 10,
     },
     action_icon: {
         color: variables.colorGreyLight
     },
     edit_buttons_main: {
-        width: "60%",
+        width: "40%",
         padding: 10,
         margin: "auto",
         marginBottom: 0,

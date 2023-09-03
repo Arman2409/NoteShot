@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 
-import { notificationStyles } from "./assets/styles";
+import { notificationStyles } from "./media/notificationStyles";
 import variables from "../../styles/variables";
 import trimString from "../functions/trimString";
 

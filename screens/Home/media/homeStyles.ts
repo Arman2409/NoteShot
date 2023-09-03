@@ -9,8 +9,8 @@ export default StyleSheet.create({
         width: "100%",
     },
     notes_list: {
-        overflow: "scroll"
-    },
+        overflowY: "auto"
+    } as any,
     add_buttons_cont: {
         position: "absolute",
         bottom: 15,
@@ -50,16 +50,13 @@ export default StyleSheet.create({
         marginRight: 3.5,
         marginTop: 3.5,
     },
-    delete_icon: {
-        color: variables.colorWarning
-    },
     add_icon: {
         color: variables.colorDark
     },
+    delete_icon: {
+        color: variables.colorWarning
+    },
     member_notes_list: {
         marginLeft: 10,
-    },
-    member_notes_list_item: {
-        backgroundColor: variables.colorLight
-    },
+    }
 })

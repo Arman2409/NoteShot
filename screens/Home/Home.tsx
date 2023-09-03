@@ -7,13 +7,14 @@ import { IoDocumentsOutline } from "react-icons/io5";
 import { BsFileEarmarkPlus } from "react-icons/bs";
 import { LuPlus } from 'react-icons/lu';
 
-import styles from './assets/styles.ts';
+import styles from './media/homeStyles.ts';
 import globalStyles from '../../styles/globals.ts';
 import { NotesAndGroupsContext } from '../../App.tsx';
 import type { GroupType, NoteType } from '../../types/types.ts';
 import { showDelModal } from '../../globals/functions/showDelModal.ts';
 import trimString from '../../globals/functions/trimString.ts';
-const AddGroup = lazy(() => import('./components/AddGroup/AddGroup.tsx'));
+import NotesListItems from './components/NotesLIstItems/NotesListItems.tsx';
+const AddGroup = lazy(() => import('./components/AddGroupModal/AddGroupModal.tsx'));
 
 export const Home = ({ navigation }: { navigation: any }) => {
   const [addGroupStatus, setAddGroupStatus] = useState<boolean>(false);
@@ -125,55 +126,22 @@ export const Home = ({ navigation }: { navigation: any }) => {
               </Text>
             </List.Item>
             {openedGroup === id && Boolean(memberNotes?.length) && <List style={styles.member_notes_list}>
-              {memberNotes.map(({ id: memberId, content, title, date, groupId }: NoteType) => (
-                <List.Item
-                  key={memberId}
-                  arrow={false}
-                  onClick={() => editNote({ id: memberId, content, title, date, groupId })}
-                  extra={<AiFillDelete
-                    style={styles.delete_icon}
-                    size={20}
-                    onClick={(e: any) => remove(e, "member", memberId, id)}
-                  />}
-                  description={<Text
-                    style={{
-                      ...styles.member_notes_list_item,
-                      ...content.styles,
-                      color: content.styles?.color
-                    }}>
-                    {trimString(content.data, 30)}
-                  </Text>}
-                >
-                  <Text style={title.styles}>
-                    {trimString(title.data, 30)}
-                  </Text>
-                </List.Item>)
-              )}
+              <NotesListItems
+               notes={memberNotes} 
+               areMembers={true}
+               remove={remove}
+               editNote={editNote}
+               groupId={id}
+                />
             </List>}
           </div>
         ))}
-        {notes.map(({ id, content, title, date, groupId }: NoteType) =>  <List.Item
-            key={id}
-            arrow={false}
-            onClick={() => editNote({ id, content, title, date, groupId })}
-            extra={<AiFillDelete
-              style={styles.delete_icon}
-              size={20}
-              onClick={(e: any) => remove(e, "note", id)}
-            />}
-            description={<Text
-              style={{
-                ...content.styles,
-                color: content.styles?.color
-              }}>
-              {trimString(content.data, 30)}
-            </Text>}
-          >
-            <Text style={title.styles}>
-              {trimString(title.data, 30)}
-            </Text>
-          </List.Item>
-        )}
+        <NotesListItems 
+                notes={notes} 
+                areMembers={false}
+                remove={remove}
+                editNote={editNote}
+                />
       </List>
       {!notes.length && !groups.length && <Text
         style={styles.no_notes_text}
