@@ -1,11 +1,12 @@
 import { Button, List, Modal } from "antd-mobile";
+import { IoDocumentsOutline } from "react-icons/io5";
 
 import { ModalProps } from "../../../../types/propTypes";
 import { GroupType } from "../../../../types/types";
 import styles from "./assets/styles";
 
-const GroupsModal = ({ visible, setVisible, action, groups }: 
-     ModalProps & { action: Function, groups: GroupType[] }) => {
+const GroupsModal = ({ visible, setVisible, action, groups }:
+    ModalProps & { action: Function, groups: GroupType[] }) => {
     return (
         <Modal
             visible={visible}
@@ -16,6 +17,8 @@ const GroupsModal = ({ visible, setVisible, action, groups }:
                     {groups.map(({ id, name }: GroupType) => (
                         <List.Item
                             arrow={false}
+                            style={styles.group_item}
+                            prefix={<IoDocumentsOutline />}
                             onClick={() => {
                                 action(id);
                                 setVisible(false);

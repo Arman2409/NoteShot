@@ -2,14 +2,14 @@ import { useCallback } from "react"
 
 import { notificationStyles } from "./assets/styles";
 import variables from "../../styles/variables";
-import cutString from "../functions/cutString";
+import trimString from "../functions/trimString";
 
 const useShowNotification = () => {
     const showNotification = useCallback((message:string, type: "success" | "warning" = "success") => {
         const messageCont = document.createElement("div");
-        const {notification} = notificationStyles;
+        const {notificationInlineStyles:notification} = {...notificationStyles};
         for(let property in notification) {
-            messageCont.style[property as string] = notification[property as keyof typeof notification];
+            messageCont.style[property as any] = notification[property as keyof typeof notification];
         }
         if (type === "success") {
             messageCont.style.color = variables.colorSuccess
@@ -17,7 +17,7 @@ const useShowNotification = () => {
         if (type === "warning") {
             messageCont.style.color = variables.colorWarning
         }
-        messageCont.textContent = cutString(message, 25);
+        messageCont.textContent = trimString(message, 30);
         document.body.appendChild(messageCont);
         setTimeout(() => {
             messageCont.style.top = "50px";
@@ -28,7 +28,7 @@ const useShowNotification = () => {
         }, 1500)
         setTimeout(() => {
             document.body.prepend(messageCont);
-        }, 2000)
+        }, 1700)
     }, [])
 
     return {showNotification};

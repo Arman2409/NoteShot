@@ -6,4 +6,8 @@ export default StyleSheet.create({
         backgroundColor: variables.colorWarning,
         color: variables.colorLight,
     },
+    group_item: {
+        backgroundColor: variables.colorLight,
+        marginVertical: 5
+    }
 })

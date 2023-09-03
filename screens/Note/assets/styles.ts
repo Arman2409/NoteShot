@@ -17,6 +17,7 @@ export default StyleSheet.create({
     },
     selector: {
         margin: "auto",
+        marginTop: 5
     },
     status_cont: {
         backgroundColor: variables.colorDark,
