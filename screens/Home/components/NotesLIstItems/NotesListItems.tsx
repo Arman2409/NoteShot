@@ -20,12 +20,10 @@ const NotesListItems = ({notes, areMembers, editNote, remove}:NotesListProps) =>
                     size={20}
                     onClick={(e: any) => remove(e, areMembers ? "member" : "note", id, areMembers ? groupId : null)}
                   />}
+                  style={areMembers ? styles.member_notes_list_item : {}}
                   description={<Text
-                    style={areMembers ? {
-                       ...styles.member_notes_list_item,
+                    style={{
                       ...content.styles,
-                      color: content.styles?.color
-                    } : { ...content.styles,
                       color: content.styles?.color
                     }}>
                     {trimString(content.data, 30)}
