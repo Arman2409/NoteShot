@@ -62,6 +62,9 @@ const Note = ({ navigation }: { navigation: any }) => {
             return;
         }
         let notifyText = "";
+        const note = noteDetails.current;
+        console.log({note});
+        
         if (mode === "add") {
             generateUniqueId(notes, ((id: string) => {
                 setNotes((currents: NoteType[]) => [
@@ -70,11 +73,11 @@ const Note = ({ navigation }: { navigation: any }) => {
                         date: new Date().toString().slice(4, 15),
                         title: {
                             data: title,
-                            styles: noteDetails.current.title.styles
+                            styles: note.title.styles
                         },
                         content: {
                             data: content,
-                            styles: noteDetails.current.content.styles
+                            styles: note.content.styles
                         }
                     },
                     ...currents,
@@ -115,45 +118,80 @@ const Note = ({ navigation }: { navigation: any }) => {
             notifyText = "Note added";
         }
         if (mode === "edit") {
-            if (noteDetails.current.groupId) {
+            if (note.groupId) {
                 setGroups((groups: GroupType[]) => (
                     groups.map((group: GroupType) => {
                         const { id } = group;
-                        if (id === noteDetails.current.groupId) {
+                        if (id === note.groupId) {
+                            console.log("group found");
+                            
                             return ({
                                 ...group,
-                                memberNotes: group.memberNotes.map((note: NoteType) => ({
-                                    id,
-                                    date: new Date().toString().slice(4, 15),
-                                    title: {
-                                        data: title,
-                                        styles: noteDetails.current.title.styles
-                                    },
-                                    content: {
-                                        data: content,
-                                        styles: noteDetails.current.content.styles
+                                memberNotes: group.memberNotes.map((currentNote: NoteType) => {
+                                    console.log(currentNote.id,note.id);
+                                    
+                                    if (currentNote.id === note.id) {
+                                        console.log("found", "editing", {
+                                            id: currentNote.id,
+                                            date: new Date().toString().slice(4, 15),
+                                            title: {
+                                                data: title,
+                                                styles: note.title.styles
+                                            },
+                                            content: {
+                                                data: content,
+                                                styles: note.content.styles
+                                            }
+                                        });
+                                        
+                                        return  ({
+                                            id: currentNote.id,
+                                            date: new Date().toString().slice(4, 15),
+                                            title: {
+                                                data: title,
+                                                styles: note.title.styles
+                                            },
+                                            content: {
+                                                data: content,
+                                                styles: note.content.styles
+                                            }
+                                        });
                                     }
-                                }))
+                                    return note;
+                            })
                             })
                         }
                         return group;
                     })
                 ))
             } else {
-                setNotes((notes: NoteType[]) => (
-                    notes.map((note: NoteType) => {
-                        const { id } = note;
-                        if (id === currentNote.id) {
+                setNotes((currentNotes: NoteType[]) => (
+                    currentNotes.map((currentNote: NoteType) => {
+                        const { id } = currentNote;
+                        if (id === note.id) {
+                            console.log("found editing", {
+                                id,
+                                date: new Date().toString().slice(4, 15),
+                                title: {
+                                    data: title,
+                                    styles: note.title.styles
+                                },
+                                content: {
+                                    data: content,
+                                    styles: note.content.styles
+                                }
+                            });
+                            
                             return ({
                                 id,
                                 date: new Date().toString().slice(4, 15),
                                 title: {
                                     data: title,
-                                    styles: noteDetails.current.title.styles
+                                    styles: note.title.styles
                                 },
                                 content: {
                                     data: content,
-                                    styles: noteDetails.current.content.styles
+                                    styles: note.content.styles
                                 }
                             })
                         }
@@ -165,7 +203,7 @@ const Note = ({ navigation }: { navigation: any }) => {
         }
         showNotification(notifyText);
         navigation.navigate("Home");
-    }, [title, content, setNotes, setGroups, groups, addingGroupId, currentNote, noteDetails.current, mode])
+    }, [title, content, setNotes, setGroups, groups, addingGroupId, currentNote, mode])
 
     const removeFromGroup = useCallback(() => {
         if (mode === "addToGroup") {
@@ -175,17 +213,22 @@ const Note = ({ navigation }: { navigation: any }) => {
         if (mode === "edit") {
             const { id: currentId } = noteDetails.current;
             const removeGroupId = addingGroupId || noteDetails.current.groupId;
-            setCurrentNote((current: NoteType) => {
-                noteDetails.current = {
-                    ...current,
-                    groupId: null
-                };
-                return ({
-                    ...current,
-                    groupId: null
-                })
+            // setCurrentNote((current: NoteType) => {
+            //     noteDetails.current = {
+            //         ...current,
+            //         groupId: null
+            //     };
+            //     return ({
+            //         ...current,
+            //         groupId: null
+            //     })
+            // }
+            // )
+            const note = {
+                ...noteDetails.current,
+                groupId: null
             }
-            )
+            noteDetails.current = note;
             setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
                 if (group.id === removeGroupId) {
                     return ({
@@ -196,12 +239,12 @@ const Note = ({ navigation }: { navigation: any }) => {
                 return group;
             }))
             setNotes((notes: NoteType[]) => ([
-                noteDetails.current,
+                note,
                 ...notes
             ]))
 
         }
-    }, [groups, mode, setGroups, setNotes, addingGroupId, noteDetails.current])
+    }, [groups, mode, setGroups, setNotes, addingGroupId])
 
     const addToGroup = useCallback((groupId: string) => {
         if (mode === "add") {
@@ -209,15 +252,20 @@ const Note = ({ navigation }: { navigation: any }) => {
             setAddingGroupId(groupId);
         }
         if (mode === "edit") {
-            let note: NoteType;
-            setCurrentNote((current: NoteType) => {
-                note = {
-                    ...current,
-                    groupId
-                };
-                noteDetails.current = note;
-                return note;
-            })
+            // let note: NoteType;
+            // setCurrentNote((current: NoteType) => {
+            //     note = {
+            //         ...current,
+            //         groupId
+            //     };
+            
+            //     return note;
+            // })
+            const note = {
+                ...noteDetails.current,
+                groupId,
+            }
+            noteDetails.current = note;
             setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
                 if (group.id === groupId) {
                     return ({
@@ -232,7 +280,6 @@ const Note = ({ navigation }: { navigation: any }) => {
             }))
             setNotes((notes: NoteType[]) => notes.filter(({ id }: NoteType) => id !== noteDetails.current.id))
         }
-
     }, [mode, setGroups, setNotes, setCurrentNote])
 
     const changeProperty = useCallback((property: string, value: string) => {
@@ -248,7 +295,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                     }
                 }
             }
-            setCurrentNote(noteDetails.current);
+            // setCurrentNote(noteDetails.current);
         }
         if (clickedType === "text") {
             textArea.current.nativeElement.style[property] = value;
@@ -262,9 +309,9 @@ const Note = ({ navigation }: { navigation: any }) => {
                     },
                 }
             }
-            setCurrentNote(noteDetails.current);
+            // setCurrentNote(noteDetails.current);
         }
-    }, [textArea, titleInput, noteDetails.current, clickedType])
+    }, [textArea, titleInput, clickedType])
 
     const changeStyles = useCallback((selected: string[]) => {
         const added = selected.filter(x => !selectedStyles.includes(x))
@@ -292,13 +339,14 @@ const Note = ({ navigation }: { navigation: any }) => {
     }, [textArea, selectedStyles, setSelectedStyles, changeProperty])
 
     const addEmoji = useCallback((emoji: string) => {
+        const note = noteDetails.current;
         if (clickedType === "text") {
             setContent(current =>  {
                 const newContent = current + emoji;
                 noteDetails.current = {
-                    ...noteDetails.current,
+                    ...note,
                     content: {
-                        styles: {...noteDetails.current.styles},
+                        styles: {...note.content.styles},
                         data: newContent
                     }
                 }
@@ -309,16 +357,16 @@ const Note = ({ navigation }: { navigation: any }) => {
             setTitle(current =>  {
                 const newTitle = current + emoji;
                 noteDetails.current = {
-                    ...noteDetails.current,
+                    ...note,
                     title: {
-                        styles: {...noteDetails.current.title.styles},
+                        styles: {...note.title.styles},
                         data: newTitle
                     }
                 }
                 return  newTitle;
             });
         }
-    }, [clickedType, setTitle, noteDetails.current, setContent])
+    }, [clickedType, setTitle, setContent])
 
     const cancelNote = useCallback(() => {
         if (mode === "add" || mode === "addToGroup") {
@@ -374,7 +422,7 @@ const Note = ({ navigation }: { navigation: any }) => {
         return groups.find(({ id }: GroupType) => {
             return id === noteDetails.current.groupId
         }).name || "";
-    }, [addingGroupId, noteDetails.current, groups])
+    }, [addingGroupId, groups])
 
     useEffect(() => {
         if (addingGroupId) {
@@ -404,7 +452,12 @@ const Note = ({ navigation }: { navigation: any }) => {
         navigation.setOptions({
             headerStyle: globalStyles.header
         })
-    }, [])
+    }, [noteDetails.current])
+
+    useEffect(() => {
+       console.log(noteDetails.current);
+       
+    }, [noteDetails.current])
 
     return (
         <View style={styles.note_main}>
@@ -437,7 +490,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             </Suspense>
             <View style={styles.actions_cont}>
                 {showColorPicker &&
-                    <View style={styles.color_picker}>
+                    <View style={styles.color_picker_cont}>
                         <AiOutlineClose
                             size={20}
                             onClick={() => setShowColorPicker(false)}

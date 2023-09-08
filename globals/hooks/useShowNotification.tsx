@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback } from "react";
 
 import { notificationStyles } from "./media/notificationStyles";
 import variables from "../../styles/variables";

@@ -22,6 +22,9 @@ export default StyleSheet.create({
         padding: 10,
         backgroundColor: variables.colorDark,
         opacity: 0.8,
+       
+    },
+    warning_text: {
         color: variables.colorLight,
         fontSize: 35
     }

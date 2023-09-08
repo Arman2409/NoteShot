@@ -4,12 +4,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 import type { GroupType, NoteType } from './types/types';
-import { groups as initialGroups, notes as initialNotes, dimesionsWarning } from "./initialData.json";
+import initialData from "./initialData.json";
 import Home from './screens/Home/Home';
 import Note from './screens/Note/Note';
 import DemoWarning from './globals/components/DemoWarning/DemoWarning';
 
 const Stack = createNativeStackNavigator();
+const { groups:initialGroups, notes:initialNotes, dimesionsWarning }:any = {...initialData};
 
 export const NotesAndGroupsContext = createContext({});
 

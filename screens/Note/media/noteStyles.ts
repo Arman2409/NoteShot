@@ -34,14 +34,18 @@ export default StyleSheet.create({
     action_icon: {
         color: variables.colorGreyLight
     },
-    color_picker: {
+    color_picker_cont: {
         position: "absolute",
         zIndex: 2,
         backgroundColor: "white",
-        width: "100%"
+        width: "100%",
+        height: "auto",
     },
     color_picker_close_button: {
-        marginLeft: "auto"
+        position: "absolute",
+        top: 5,
+        right: 5,
+        zIndex: 2,
     },
     add_edit_button: {
         position: "absolute",
