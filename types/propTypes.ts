@@ -7,6 +7,7 @@ export type EditButtonsProps = {
     groupAction: Function
     setShowEmojis:Function
     setShowColorPicker:Function
+    setShowPriorityModal:Function
 }
 
 export type ModalProps = {

@@ -2,6 +2,7 @@ import { Button, List, Modal } from "antd-mobile";
 import { IoDocumentsOutline } from "react-icons/io5";
 
 import styles from "./media/groupsModalStyles";
+import globalStyles from "../../../../styles/globals";
 import type { ModalProps } from "../../../../types/propTypes";
 import type { GroupType } from "../../../../types/types";
 
@@ -29,7 +30,7 @@ const GroupsModal = ({ visible, setVisible, action, groups }:
                 </List>
                 <Button
                     block
-                    style={styles.cancel_button}
+                    style={globalStyles.modal_cancel_button}
                     size="small"
                     onClick={() => setVisible(false)}
                 >

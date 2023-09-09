@@ -1,6 +1,6 @@
 import { Modal } from "antd-mobile"
 
-import { deleteModalStyles as styles } from "./assets/styles"
+import globalStyles from "../../styles/globals"
 
 export const showDelModal = (
     actionName: string,
@@ -12,13 +12,13 @@ export const showDelModal = (
             {
                 key: "delete",
                 text: confirmText,
-                style: styles.delete_button,
+                style: globalStyles.modal_cancel_button,
                 onClick: () => deleteFunction()
             },
             {
                 key: "cancel",
                 text: "Cancel",
-                style: styles.cancel_button,
+                style: globalStyles.modal_success_button,
                 onClick: () => Modal.clear()
             },
         ]
