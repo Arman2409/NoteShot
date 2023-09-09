@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useContext, useEffect, useState } from 'react';
+import { Suspense, lazy, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
 import { Button, List } from 'antd-mobile';
 import { AiFillDelete } from 'react-icons/ai';
@@ -21,17 +21,24 @@ export const Home = ({ navigation }: { navigation: any }) => {
   const [openedGroup, setOpenedGroup] = useState<string>("");
   const { setCurrentNote, setAddingGroupId, groups, setGroups, notes, setNotes } = useContext<any>(NotesAndGroupsContext);
 
+  const AddGroupModalMemo = useMemo(() => <AddGroup
+    groups={groups}
+    setGroups={setGroups}
+    setVisible={setAddGroupStatus}
+    visible={addGroupStatus} />
+  , [groups, setGroups, setAddGroupStatus, addGroupStatus])
+
   const editNote = useCallback((note: NoteType) => {
     setCurrentNote(note);
     setAddingGroupId(null);
     navigation.navigate("Note");
-  }, [setCurrentNote])
+  }, [setCurrentNote, setAddingGroupId])
 
   const addNote = useCallback(() => {
     setCurrentNote({});
     setAddingGroupId(null)
     navigation.navigate("Note");
-  }, [setCurrentNote])
+  }, [setCurrentNote, setAddingGroupId])
 
   const remove = useCallback((e: Event, type: "note" | "group" | "member", id: string, parentId?: string) => {
     e.stopPropagation();
@@ -84,11 +91,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
         </Button>
       </View>
       <Suspense fallback={"..."}>
-        <AddGroup
-          groups={groups}
-          setGroups={setGroups}
-          setVisible={setAddGroupStatus}
-          visible={addGroupStatus} />
+          {AddGroupModalMemo}
       </Suspense>
       <List
         header="My Notes"
@@ -127,21 +130,21 @@ export const Home = ({ navigation }: { navigation: any }) => {
             </List.Item>
             {openedGroup === id && Boolean(memberNotes?.length) && <List style={styles.member_notes_list}>
               <NotesListItems
-               notes={memberNotes} 
-               areMembers={true}
-               remove={remove}
-               editNote={editNote}
-               groupId={id}
-                />
+                notes={memberNotes}
+                areMembers={true}
+                remove={remove}
+                editNote={editNote}
+                groupId={id}
+              />
             </List>}
           </div>
         ))}
-        <NotesListItems 
-                notes={notes} 
-                areMembers={false}
-                remove={remove}
-                editNote={editNote}
-                />
+        <NotesListItems
+          notes={notes}
+          areMembers={false}
+          remove={remove}
+          editNote={editNote}
+        />
       </List>
       {!notes.length && !groups.length && <Text
         style={styles.no_notes_text}

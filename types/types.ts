@@ -9,7 +9,8 @@ export type NoteType = {
         styles: any
         data: string
     },
-    groupId: string|null
+    groupId: string|null,
+    priority?: number|null
 }
 
 export type GroupType = {

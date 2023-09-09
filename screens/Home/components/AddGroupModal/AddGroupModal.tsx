@@ -1,10 +1,11 @@
 import { useCallback } from "react";
 import { Button, Form, Input, Modal } from "antd-mobile";
 
+import styles from "./media/addGroupStyles";
+import globalStyles from "../../../../styles/globals";
 import type { ModalProps } from "../../../../types/propTypes";
 import type { GroupType } from "../../../../types/types";
 import generateUniqueId from "../../../../globals/functions/generateUniqueId";
-import styles from "./media/addGroupStyles";
 
 const AddGroup = ({visible, setVisible,  groups, setGroups}:ModalProps
        & {groups: GroupType[], setGroups: Function}) => {
@@ -51,7 +52,7 @@ const AddGroup = ({visible, setVisible,  groups, setGroups}:ModalProps
                 </Button>
                  <Button 
                   block
-                  style={styles.cancel_button}
+                  style={globalStyles.modal_cancel_button}
                   size="small"
                   onClick={() => setVisible(false)}
                   >

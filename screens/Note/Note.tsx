@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { Selector, Button, Modal } from "antd-mobile";
 import { RxFontItalic } from "react-icons/rx";
@@ -18,6 +18,7 @@ import EditButtons from "./components/EditButtons/EditButtons.tsx";
 import NoteEntry from "./components/NoteEntry/NoteEntry.tsx";
 import variables from "../../styles/variables.ts";
 const GroupsModal = lazy(() => import("./components/GroupsModal/GroupsModal.tsx"));
+const PriorityModal = lazy(() => import("./components/PriorityModal/PriorityModal.tsx"));
 
 const styleOptions = [
     { key: '1', label: <PiTextUnderlineBold />, value: "underline" },
@@ -33,6 +34,8 @@ const Note = ({ navigation }: { navigation: any }) => {
     const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
     const [mode, setMode] = useState<"add" | "edit" | "addToGroup">("add");
     const [showGroupStatus, setShowGroupStatus] = useState<boolean>(false);
+    const [showPriorityModal, setShowPriorityModal] = useState<boolean>(false);
+
     const [showAddToGroupModal, setShowAddToGroupModal] = useState<boolean>(false);
 
     const titleInput = useRef<any>(null);
@@ -40,6 +43,12 @@ const Note = ({ navigation }: { navigation: any }) => {
     const noteDetails = useRef<any>({ title: { styles: {} }, content: { styles: {} } });
 
     const { notes, setNotes, groups, setGroups, currentNote, setCurrentNote, addingGroupId, setAddingGroupId } = useContext<any>(NotesAndGroupsContext);
+
+    const PriorityModalMemo = useMemo(() => <PriorityModal
+        visible={showPriorityModal}
+        updatePriority={(priority:number) => noteDetails.current = {...noteDetails.current, priority}}
+        setVisible={setShowPriorityModal}
+    />, [showPriorityModal, setShowPriorityModal, ]);
 
     const { showNotification } = useShowNotification();
 
@@ -63,8 +72,7 @@ const Note = ({ navigation }: { navigation: any }) => {
         }
         let notifyText = "";
         const note = noteDetails.current;
-        console.log({note});
-        
+
         if (mode === "add") {
             generateUniqueId(notes, ((id: string) => {
                 setNotes((currents: NoteType[]) => [
@@ -123,13 +131,10 @@ const Note = ({ navigation }: { navigation: any }) => {
                     groups.map((group: GroupType) => {
                         const { id } = group;
                         if (id === note.groupId) {
-                            console.log("group found");
-                            
                             return ({
                                 ...group,
                                 memberNotes: group.memberNotes.map((currentNote: NoteType) => {
-                                    console.log(currentNote.id,note.id);
-                                    
+
                                     if (currentNote.id === note.id) {
                                         console.log("found", "editing", {
                                             id: currentNote.id,
@@ -143,8 +148,8 @@ const Note = ({ navigation }: { navigation: any }) => {
                                                 styles: note.content.styles
                                             }
                                         });
-                                        
-                                        return  ({
+
+                                        return ({
                                             id: currentNote.id,
                                             date: new Date().toString().slice(4, 15),
                                             title: {
@@ -158,7 +163,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                                         });
                                     }
                                     return note;
-                            })
+                                })
                             })
                         }
                         return group;
@@ -181,7 +186,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                                     styles: note.content.styles
                                 }
                             });
-                            
+
                             return ({
                                 id,
                                 date: new Date().toString().slice(4, 15),
@@ -213,17 +218,6 @@ const Note = ({ navigation }: { navigation: any }) => {
         if (mode === "edit") {
             const { id: currentId } = noteDetails.current;
             const removeGroupId = addingGroupId || noteDetails.current.groupId;
-            // setCurrentNote((current: NoteType) => {
-            //     noteDetails.current = {
-            //         ...current,
-            //         groupId: null
-            //     };
-            //     return ({
-            //         ...current,
-            //         groupId: null
-            //     })
-            // }
-            // )
             const note = {
                 ...noteDetails.current,
                 groupId: null
@@ -252,15 +246,6 @@ const Note = ({ navigation }: { navigation: any }) => {
             setAddingGroupId(groupId);
         }
         if (mode === "edit") {
-            // let note: NoteType;
-            // setCurrentNote((current: NoteType) => {
-            //     note = {
-            //         ...current,
-            //         groupId
-            //     };
-            
-            //     return note;
-            // })
             const note = {
                 ...noteDetails.current,
                 groupId,
@@ -282,6 +267,13 @@ const Note = ({ navigation }: { navigation: any }) => {
         }
     }, [mode, setGroups, setNotes, setCurrentNote])
 
+    const GroupsModalMemo = useMemo(() => <GroupsModal
+        visible={showAddToGroupModal}
+        setVisible={setShowAddToGroupModal}
+        action={addToGroup}
+        groups={groups}
+    />, [groups, addToGroup, setShowAddToGroupModal, showAddToGroupModal])
+
     const changeProperty = useCallback((property: string, value: string) => {
         if (clickedType === "title") {
             titleInput.current.nativeElement.style[property] = value;
@@ -295,7 +287,6 @@ const Note = ({ navigation }: { navigation: any }) => {
                     }
                 }
             }
-            // setCurrentNote(noteDetails.current);
         }
         if (clickedType === "text") {
             textArea.current.nativeElement.style[property] = value;
@@ -309,7 +300,6 @@ const Note = ({ navigation }: { navigation: any }) => {
                     },
                 }
             }
-            // setCurrentNote(noteDetails.current);
         }
     }, [textArea, titleInput, clickedType])
 
@@ -341,29 +331,29 @@ const Note = ({ navigation }: { navigation: any }) => {
     const addEmoji = useCallback((emoji: string) => {
         const note = noteDetails.current;
         if (clickedType === "text") {
-            setContent(current =>  {
+            setContent(current => {
                 const newContent = current + emoji;
                 noteDetails.current = {
                     ...note,
                     content: {
-                        styles: {...note.content.styles},
+                        styles: { ...note.content.styles },
                         data: newContent
                     }
                 }
-                return  newContent;
+                return newContent;
             });
         }
         if (clickedType === "title") {
-            setTitle(current =>  {
+            setTitle(current => {
                 const newTitle = current + emoji;
                 noteDetails.current = {
                     ...note,
                     title: {
-                        styles: {...note.title.styles},
+                        styles: { ...note.title.styles },
                         data: newTitle
                     }
                 }
-                return  newTitle;
+                return newTitle;
             });
         }
     }, [clickedType, setTitle, setContent])
@@ -376,7 +366,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                         {
                             key: "cancel",
                             text: "Cancel",
-                            style: styles.modal_cancel_button,
+                            style: globalStyles.modal_cancel_button,
                             onClick: () => {
                                 navigation.navigate("Home");
                                 Modal.clear();
@@ -398,7 +388,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                         {
                             key: "cancel",
                             text: "Cancel",
-                            style: styles.modal_cancel_button,
+                            style: globalStyles.modal_cancel_button,
                             onClick: () => {
                                 navigation.navigate("Home");
                                 Modal.clear();
@@ -424,7 +414,7 @@ const Note = ({ navigation }: { navigation: any }) => {
         }).name || "";
     }, [addingGroupId, groups])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (addingGroupId) {
             setMode("addToGroup");
         }
@@ -454,10 +444,6 @@ const Note = ({ navigation }: { navigation: any }) => {
         })
     }, [noteDetails.current])
 
-    useEffect(() => {
-       console.log(noteDetails.current);
-       
-    }, [noteDetails.current])
 
     return (
         <View style={styles.note_main}>
@@ -476,17 +462,13 @@ const Note = ({ navigation }: { navigation: any }) => {
                 }
                 showCloseButton={true}
                 visible={showEmojis}
-                onClose={() => 
+                onClose={() =>
                     setShowEmojis(false)
                 }
             />
-            <Suspense fallback="...">
-                <GroupsModal
-                    visible={showAddToGroupModal}
-                    setVisible={setShowAddToGroupModal}
-                    action={addToGroup}
-                    groups={groups}
-                />
+            <Suspense fallback="Loading...">
+                {PriorityModalMemo}
+                {GroupsModalMemo}
             </Suspense>
             <View style={styles.actions_cont}>
                 {showColorPicker &&
@@ -510,7 +492,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                         "--checked-color": variables.colorDark,
                         "--text-color": variables.colorLight,
                         "--checked-text-color": variables.colorLight,
-                     }}
+                    }}
                 />
                 <EditButtons
                     inGroup={showGroupStatus}
@@ -521,8 +503,10 @@ const Note = ({ navigation }: { navigation: any }) => {
                         }
                         setShowAddToGroupModal(true);
                     }}
+                    setShowPriorityModal={setShowPriorityModal}
                     setShowEmojis={setShowEmojis}
-                    setShowColorPicker={setShowColorPicker} />
+                    setShowColorPicker={setShowColorPicker}
+                />
             </View>
             <NoteEntry
                 title={title}

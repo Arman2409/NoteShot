@@ -55,8 +55,5 @@ export default StyleSheet.create({
     cancel_button: {
         position: "absolute",
         bottom: 0
-    },
-    modal_cancel_button: {
-        backgroundColor: variables.colorWarning
     }
 })

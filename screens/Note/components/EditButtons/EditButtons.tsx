@@ -3,55 +3,66 @@ import { Grid } from "antd-mobile";
 import { LuPaintbrush2 } from "react-icons/lu";
 import { AiFillSmile } from "react-icons/ai";
 import { CgFileRemove, CgFileAdd } from "react-icons/cg";
+import { MdLowPriority } from "react-icons/md";
 
 import globalStyles from "../../../../styles/globals";
 import styles from "./media/editButtonsStyles";
 import type { EditButtonsProps } from "../../../../types/propTypes";
 
-const EditButtons = ({ inGroup, groupAction, setShowEmojis, setShowColorPicker }: EditButtonsProps) => (
-        <Grid
-            columns={3}
-            gap={15}
-            style={styles.edit_buttons_main}>
-            <Grid.Item
-                style={{
-                    ...globalStyles.centered,
-                    ...styles.action_button
-                }}>
-                {inGroup ? <CgFileRemove
-                    style={styles.action_icon}
-                    onClick={groupAction as any}
-                    size={25} /> :
-                    <CgFileAdd
-                        size={25}
-                        style={styles.action_icon}
-                        onClick={groupAction as any}
-                    />}
-            </Grid.Item>
-            <Grid.Item
-                style={{
-                    ...globalStyles.centered,
-                    ...styles.action_button
-                }}
-                onClick={() => setShowEmojis((curr: boolean) => !curr)}
-            >
-                <AiFillSmile
-                    style={styles.action_icon}
-                    size={25}
-                />
-            </Grid.Item>
-            <Grid.Item
-                style={{
-                    ...globalStyles.centered,
-                    ...styles.action_button
-                }}
-                onClick={() => setShowColorPicker((curr: boolean) => !curr)}
-            >
-                <LuPaintbrush2
-                    style={styles.action_icon}
-                    size={25} />
-            </Grid.Item>
-        </Grid>
+const EditButtons = ({ inGroup, groupAction, setShowPriorityModal, setShowEmojis, setShowColorPicker }: EditButtonsProps) => (<Grid
+    columns={4}
+    gap={15}
+    style={styles.edit_buttons_main}>
+    <Grid.Item
+        style={{
+            ...globalStyles.centered,
+            ...styles.action_button
+        }}>
+        {inGroup ? <CgFileRemove
+            style={styles.action_icon}
+            onClick={groupAction as any}
+            size={25} /> :
+            <CgFileAdd
+                size={25}
+                style={styles.action_icon}
+                onClick={groupAction as any}
+            />}
+    </Grid.Item>
+    <Grid.Item
+        style={{
+            ...globalStyles.centered,
+            ...styles.action_button
+        }}
+        onClick={() => setShowEmojis((curr: boolean) => !curr)}
+    >
+        <AiFillSmile
+            style={styles.action_icon}
+            size={25}
+        />
+    </Grid.Item>
+    <Grid.Item
+        style={{
+            ...globalStyles.centered,
+            ...styles.action_button
+        }}
+        onClick={() => setShowColorPicker((curr: boolean) => !curr)}
+    >
+        <LuPaintbrush2
+            style={styles.action_icon}
+            size={25} />
+    </Grid.Item>
+    <Grid.Item
+        style={{
+            ...globalStyles.centered,
+            ...styles.action_button
+        }}
+        onClick={() => setShowPriorityModal(true)}
+    >
+        <MdLowPriority
+            style={styles.action_icon}
+            size={25} />
+    </Grid.Item>
+</Grid>
 )
 
 export default EditButtons;

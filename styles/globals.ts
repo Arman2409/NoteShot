@@ -10,5 +10,13 @@ export default StyleSheet.create({
    header: {
       backgroundColor: variables.colorLight,
       color: variables.colorGreyDark,
+   },
+   modal_cancel_button: {
+      backgroundColor: variables.colorWarning,
+      color: variables.colorLight,
+   },
+   modal_success_button: {
+         backgroundColor: variables.colorSuccess,
+         color: variables.colorLight,
    }
 })
