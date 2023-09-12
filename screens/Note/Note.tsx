@@ -15,6 +15,7 @@ import generateUniqueId from "../../globals/functions/generateUniqueId.ts";
 import useShowNotification from "../../globals/hooks/useShowNotification.tsx";
 import { showDelModal } from "../../globals/functions/showDelModal.ts";
 import EditButtons from "./components/EditButtons/EditButtons.tsx";
+import HeaderButtons from "./components/HeaderButtons/HeaderButtons.tsx";
 import NoteEntry from "./components/NoteEntry/NoteEntry.tsx";
 import variables from "../../styles/variables.ts";
 const GroupsModal = lazy(() => import("./components/GroupsModal/GroupsModal.tsx"));
@@ -35,7 +36,6 @@ const Note = ({ navigation }: { navigation: any }) => {
     const [mode, setMode] = useState<"add" | "edit" | "addToGroup">("add");
     const [showGroupStatus, setShowGroupStatus] = useState<boolean>(false);
     const [showPriorityModal, setShowPriorityModal] = useState<boolean>(false);
-
     const [showAddToGroupModal, setShowAddToGroupModal] = useState<boolean>(false);
 
     const titleInput = useRef<any>(null);
@@ -44,13 +44,52 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     const { notes, setNotes, groups, setGroups, currentNote, setCurrentNote, addingGroupId, setAddingGroupId } = useContext<any>(NotesAndGroupsContext);
 
+    const { showNotification } = useShowNotification();
+
+    const updatePriority = useCallback((priority: number) => {
+        const note = { ...noteDetails.current, priority }
+        noteDetails.current = note;
+        setCurrentNote(note);
+        setShowPriorityModal(false);
+        if (mode === "add") return;
+        if(note.groupId) {
+            setGroups((groups:GroupType[]) => groups.map((group:GroupType) => {
+                const {id} = group;
+                if(id === note.groupId) {
+                    const {memberNotes} = group;
+                    return {
+                        ...group,
+                        memberNotes: memberNotes.map((member:NoteType) => {
+                            if(member.id === note.id) {
+                                return {
+                                  ...member,
+                                    priority
+                                }
+                            }
+                            return member;
+                        })
+                    }
+                }
+                return group;
+            }))
+            return;
+        }
+        setNotes((notes: NoteType[]) => notes.map((note:NoteType) => {
+            const { id } = note;
+            if (id === currentNote.id) return {
+                ...note,
+                priority
+            }
+            return note;
+        }))
+    }, [setCurrentNote, setNotes, setShowPriorityModal])
+
     const PriorityModalMemo = useMemo(() => <PriorityModal
         visible={showPriorityModal}
-        updatePriority={(priority:number) => noteDetails.current = {...noteDetails.current, priority}}
+        updatePriority={updatePriority}
+        defaultValue={noteDetails.current.priority}
         setVisible={setShowPriorityModal}
-    />, [showPriorityModal, setShowPriorityModal, ]);
-
-    const { showNotification } = useShowNotification();
+    />, [showPriorityModal, setShowPriorityModal, updatePriority]);
 
     const addEditNote = useCallback(() => {
         if (!title) {
@@ -86,7 +125,8 @@ const Note = ({ navigation }: { navigation: any }) => {
                         content: {
                             data: content,
                             styles: note.content.styles
-                        }
+                        },
+                        priority: noteDetails.current.priority || 1,
                     },
                     ...currents,
                 ])
@@ -114,7 +154,8 @@ const Note = ({ navigation }: { navigation: any }) => {
                                     content: {
                                         data: content,
                                         styles: noteDetails.current.content.styles
-                                    }
+                                    },
+                                    priority: 1
                                 },
                                 ...memberNotes || []
                             ]
@@ -134,23 +175,10 @@ const Note = ({ navigation }: { navigation: any }) => {
                             return ({
                                 ...group,
                                 memberNotes: group.memberNotes.map((currentNote: NoteType) => {
-
                                     if (currentNote.id === note.id) {
-                                        console.log("found", "editing", {
-                                            id: currentNote.id,
-                                            date: new Date().toString().slice(4, 15),
-                                            title: {
-                                                data: title,
-                                                styles: note.title.styles
-                                            },
-                                            content: {
-                                                data: content,
-                                                styles: note.content.styles
-                                            }
-                                        });
 
                                         return ({
-                                            id: currentNote.id,
+                                            ...noteDetails.current,
                                             date: new Date().toString().slice(4, 15),
                                             title: {
                                                 data: title,
@@ -174,21 +202,8 @@ const Note = ({ navigation }: { navigation: any }) => {
                     currentNotes.map((currentNote: NoteType) => {
                         const { id } = currentNote;
                         if (id === note.id) {
-                            console.log("found editing", {
-                                id,
-                                date: new Date().toString().slice(4, 15),
-                                title: {
-                                    data: title,
-                                    styles: note.title.styles
-                                },
-                                content: {
-                                    data: content,
-                                    styles: note.content.styles
-                                }
-                            });
-
                             return ({
-                                id,
+                                ...noteDetails.current,
                                 date: new Date().toString().slice(4, 15),
                                 title: {
                                     data: title,
@@ -236,14 +251,15 @@ const Note = ({ navigation }: { navigation: any }) => {
                 note,
                 ...notes
             ]))
-
         }
+        setShowGroupStatus(false);
     }, [groups, mode, setGroups, setNotes, addingGroupId])
 
     const addToGroup = useCallback((groupId: string) => {
         if (mode === "add") {
             setMode("addToGroup");
             setAddingGroupId(groupId);
+            setShowGroupStatus(true);
         }
         if (mode === "edit") {
             const note = {
@@ -251,6 +267,9 @@ const Note = ({ navigation }: { navigation: any }) => {
                 groupId,
             }
             noteDetails.current = note;
+            setCurrentNote(note);
+            console.log(note);
+            
             setGroups((groups: GroupType[]) => groups.map((group: GroupType) => {
                 if (group.id === groupId) {
                     return ({
@@ -264,6 +283,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                 return group;
             }))
             setNotes((notes: NoteType[]) => notes.filter(({ id }: NoteType) => id !== noteDetails.current.id))
+            setShowGroupStatus(true);
         }
     }, [mode, setGroups, setNotes, setCurrentNote])
 
@@ -440,10 +460,32 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerStyle: globalStyles.header
+            headerStyle: globalStyles.header,
+            headerRight: () => <HeaderButtons 
+                inGroup={showGroupStatus}
+                groupAction={() => {
+                    if(showAddToGroupModal) {
+                        setShowAddToGroupModal(false);
+                        return;
+                    }
+                    if (showGroupStatus) {
+                        showDelModal(`Remove from the group ${getGroupName()}`, removeFromGroup, "Remove")
+                        return;
+                    }
+                    if(showPriorityModal) setShowPriorityModal(false);
+                    setShowAddToGroupModal(true);
+                }}
+                setShowPriorityModal={() => {
+                    if(showAddToGroupModal) setShowAddToGroupModal(false);
+                    setShowPriorityModal(current => !current);
+                }} />
         })
-    }, [noteDetails.current])
+    }, [showGroupStatus, showPriorityModal, showAddToGroupModal, setShowPriorityModal, setShowAddToGroupModal])
 
+    useEffect(() => {
+        // console.log(noteDetails.current);
+
+    }, [noteDetails.current])
 
     return (
         <View style={styles.note_main}>
@@ -495,15 +537,6 @@ const Note = ({ navigation }: { navigation: any }) => {
                     }}
                 />
                 <EditButtons
-                    inGroup={showGroupStatus}
-                    groupAction={() => {
-                        if (showGroupStatus) {
-                            showDelModal(`Remove from the group ${getGroupName()}`, removeFromGroup, "Remove")
-                            return;
-                        }
-                        setShowAddToGroupModal(true);
-                    }}
-                    setShowPriorityModal={setShowPriorityModal}
                     setShowEmojis={setShowEmojis}
                     setShowColorPicker={setShowColorPicker}
                 />

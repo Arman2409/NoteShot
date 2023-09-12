@@ -10,6 +10,7 @@
         {
             "date": "29 Aug 2023",
             "id": "xxxxxxxxxxxxxxxxxx",
+            "priority": 0, 
             "groupId": null,
             "title": {
                 "data": "My note title",

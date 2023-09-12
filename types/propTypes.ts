@@ -3,11 +3,8 @@ import { Ref } from "react";
 import type { NoteType } from "./types";
 
 export type EditButtonsProps = {
-    inGroup: Boolean
-    groupAction: Function
     setShowEmojis:Function
     setShowColorPicker:Function
-    setShowPriorityModal:Function
 }
 
 export type ModalProps = {
@@ -35,4 +32,14 @@ export type NotesListProps = {
     editNote: Function
     remove: Function,
     groupId?: string
+}
+
+export type HeaderButtonsProps = {
+    inGroup: Boolean
+    groupAction: Function
+    setShowPriorityModal: Function
+}
+
+export type PriorityProps = {
+    priority: number|null|undefined
 }

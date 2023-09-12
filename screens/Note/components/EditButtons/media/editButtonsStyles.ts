@@ -9,10 +9,10 @@ export default StyleSheet.create({
         borderRadius: 10,
     },
     action_icon: {
-        color: variables.colorGreyLight
+        color: variables.colorLight
     },
     edit_buttons_main: {
-        width: "40%",
+        width: "auto",
         padding: 10,
         margin: "auto",
         marginBottom: 0,

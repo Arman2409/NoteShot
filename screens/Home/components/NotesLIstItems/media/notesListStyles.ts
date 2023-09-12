@@ -13,4 +13,7 @@ export default StyleSheet.create({
     delete_icon: {
         color: variables.colorWarning
     },
+    extra_grid: {
+        display: "flex"
+    }
 })
