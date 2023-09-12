@@ -13,9 +13,6 @@ export default StyleSheet.create({
         backgroundColor: variables.colorGreyLight,
         position: "relative",
     },
-    emojis_cont: {
-       padding: 10
-    },
     selector: {
         margin: "auto",
         marginTop: 5

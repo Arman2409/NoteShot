@@ -28,7 +28,7 @@ const NoteEntry = ({ title,
             <Form layout='horizontal'>
                 <Form.Item
                     arrow={false}
-                    onClick={() => setClickedType("text")}>
+                    onClick={() => setClickedType("content")}>
                     <TextArea
                         ref={contentRef}
                         value={content}
