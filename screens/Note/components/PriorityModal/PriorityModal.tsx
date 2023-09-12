@@ -5,7 +5,9 @@ import { Button, Modal, Rate } from "antd-mobile";
 import globalStyles from "../../../../styles/globals";
 import type { ModalProps } from "../../../../types/propTypes";
 
-const PriorityModal = ({ visible, setVisible, updatePriority }: ModalProps & { updatePriority: Function }) => {
+const PriorityModal = (
+    { visible, setVisible, updatePriority, defaultValue }: ModalProps
+     & { updatePriority: Function, defaultValue: number }) => {
     const [priority, setPriority] = useState<number>(0);
 
     return (
@@ -16,6 +18,7 @@ const PriorityModal = ({ visible, setVisible, updatePriority }: ModalProps & { u
             title="Change note's priority"
             content={<View style={globalStyles.centered}>
                 <Rate
+                    defaultValue={defaultValue}
                     onChange={(value: number) => setPriority(value)}
                 />
                 <Button

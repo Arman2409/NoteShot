@@ -3,11 +3,8 @@ import { Ref } from "react";
 import type { NoteType } from "./types";
 
 export type EditButtonsProps = {
-    inGroup: Boolean
-    groupAction: Function
-    setShowEmojis:Function
-    setShowColorPicker:Function
-    setShowPriorityModal:Function
+    setShowEmojis: Function
+    setShowColorPicker: Function
 }
 
 export type ModalProps = {
@@ -17,12 +14,12 @@ export type ModalProps = {
 
 export type NoteEntryProps = {
     title: string
-    setTitle: Function,
     titleRef: Ref<any>
     content: string
-    setContent: Function
     contentRef: Ref<any>
     setClickedType: Function
+    setContent: Function
+    setTitle: Function
 }
 
 export type DemoWarningProps = {
@@ -31,8 +28,27 @@ export type DemoWarningProps = {
 
 export type NotesListProps = {
     areMembers: boolean
+    groupId?: string
     notes: NoteType[]
     editNote: Function
     remove: Function,
-    groupId?: string
+}
+
+export type HeaderButtonsProps = {
+    inGroup: Boolean
+    groupAction: Function
+    setShowPriorityModal: Function
+}
+
+export type PriorityProps = {
+    priority: number | null | undefined
+}
+
+export type EmojiPickerProps = {
+    showEmojis: boolean
+    clickedType: string
+    setShowEmojis: Function
+    setTitle: Function
+    setContent: Function
+    addEmojiCallback: Function
 }
