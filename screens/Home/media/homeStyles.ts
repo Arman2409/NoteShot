@@ -21,8 +21,7 @@ export default StyleSheet.create({
         width: 55,
         height: 55,
         borderRadius: 50,
-        marginRight: 10,
-        paddingTop: 12,
+        marginRight: 5,
         margin: 5,
         backgroundColor: variables.colorLight,
         color: variables.colorDark,
@@ -46,7 +45,7 @@ export default StyleSheet.create({
         backgroundColor: "transparent"
     },
     group_button: {
-        marginLeft: 3.5,
+        marginLeft: "auto",
         marginRight: 3.5,
         marginTop: 3.5,
     },
