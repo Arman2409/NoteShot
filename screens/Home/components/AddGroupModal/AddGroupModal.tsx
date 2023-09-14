@@ -1,5 +1,7 @@
-import { useCallback } from "react";
-import { Button, Form, Input, Modal } from "antd-mobile";
+import { useCallback, useState } from "react";
+import Button from "@ant-design/react-native/lib/button";
+import Modal from "@ant-design/react-native/lib/modal";
+import InputItem from "@ant-design/react-native/lib/input-item";
 
 import styles from "./media/addGroupStyles";
 import globalStyles from "../../../../styles/globals";
@@ -7,59 +9,70 @@ import type { ModalProps } from "../../../../types/propTypes";
 import type { GroupType } from "../../../../types/types";
 import generateUniqueId from "../../../../globals/functions/generateUniqueId";
 
-const AddGroup = ({visible, setVisible,  groups, setGroups}:ModalProps
-       & {groups: GroupType[], setGroups: Function}) => {
+const AddGroup = ({ visible, setVisible, groups, setGroups }: ModalProps
+    & { groups: GroupType[], setGroups: Function }) => {
 
-    const addGroup = useCallback(({name}:GroupType) => {
+    const [groupName, setGroupName] = useState<string>("");
+
+    const addGroup = useCallback(() => {
+        if (!groupName) {
+            Modal.alert(
+                "Error",
+                "Group name cannot be empty", [
+                { text: "OK", onPress: () => { } }
+            ]
+            )
+        }
         generateUniqueId(groups, ((id: string) => {
             setGroups((groups: GroupType[]) => [
                 {
                     id,
-                    name,
+                    name: groupName,
                     memberNotes: []
                 },
                 ...groups,
             ])
         }))
         setVisible(false);
-    }, [setGroups])
+    }, [setGroups, groupName])
 
     return (
-        <Modal 
-          visible={visible} 
-          onClose={() => setVisible(false)}
-          content={
-            <Form 
-              onFinish={addGroup}
-              >
-                 <Form.Item
-                    name="name"
-                    rules={[{required: true,  min: 2, message: "Minimum 2 letters for group name"} ]}
-                >
-                    <Input 
-                      placeholder="Type the group's name"
-                      style={styles.add_input}
-                      clearable
-                     />
-                </Form.Item>
-                 <Button 
-                  block
-                  type="submit"
-                  size="small"
-                  style={styles.add_button}
-                  >
-                    Add Group
-                </Button>
-                 <Button 
-                  block
-                  style={globalStyles.modal_cancel_button}
-                  size="small"
-                  onClick={() => setVisible(false)}
-                  >
-                   Cancel
-                </Button>
-            </Form>
-        } />
+        <Modal
+            popup
+            animateAppear={true}
+            animationType="slide-up"
+            visible={visible}
+            closable={true}
+            maskClosable={true}
+            onClose={() => setVisible(false)}
+            style={styles.modal_main}
+        >
+            <InputItem
+                onChange={setGroupName}
+                value={groupName}
+                placeholder="Enter Group Name here"
+                style={styles.add_input}
+            />
+            <Button
+                type="primary"
+                size="large"
+                style={{
+                    ...globalStyles.modal_success_button,
+                    ...styles.add_button
+                }}
+                onPress={addGroup}
+            >
+                Add Group
+            </Button>
+            <Button
+                type="primary"
+                size="large"
+                style={globalStyles.modal_cancel_button}
+                onPress={() => setVisible(false)}
+            >
+                Cancel
+            </Button>
+        </Modal>
     )
 }
 
