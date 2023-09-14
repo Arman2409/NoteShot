@@ -1,6 +1,8 @@
 import { Suspense, lazy, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
-import { Button, List } from 'antd-mobile';
+import Button from '@ant-design/react-native/lib/button';
+import List from '@ant-design/react-native/lib/list';
+import Flex from "@ant-design/react-native/lib/flex";
 import { AiFillDelete } from 'react-icons/ai';
 import { PiCirclesThreePlusLight } from "react-icons/pi"
 import { IoDocumentsOutline } from "react-icons/io5";
@@ -14,7 +16,7 @@ import type { GroupType, NoteType } from '../../types/types.ts';
 import { showDelModal } from '../../globals/functions/showDelModal.ts';
 import trimString from '../../globals/functions/trimString.ts';
 import NotesListItems from './components/NotesLIstItems/NotesListItems.tsx';
-const AddGroup = lazy(() => import('./components/AddGroupModal/AddGroupModal.tsx'));
+const AddGroup = lazy(() => import('./components/AddGroupModal/AddGroupModal.tsx') as any);
 
 export const Home = ({ navigation }: { navigation: any }) => {
   const [addGroupStatus, setAddGroupStatus] = useState<boolean>(false);
@@ -26,7 +28,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
     setGroups={setGroups}
     setVisible={setAddGroupStatus}
     visible={addGroupStatus} />
-  , [groups, setGroups, setAddGroupStatus, addGroupStatus])
+    , [groups, setGroups, setAddGroupStatus, addGroupStatus])
 
   const editNote = useCallback((note: NoteType) => {
     setCurrentNote(note);
@@ -78,51 +80,52 @@ export const Home = ({ navigation }: { navigation: any }) => {
     <View style={styles.main}>
       <View style={styles.add_buttons_cont}>
         <Button
-          block
           style={styles.add_button}
-          onClick={() => setAddGroupStatus(true)}>
+          onPress={() => setAddGroupStatus(true)}>
           <PiCirclesThreePlusLight />
         </Button>
         <Button
-          block
           style={styles.add_button}
-          onClick={addNote}>
+          onPress={addNote}>
           <LuPlus />
         </Button>
       </View>
       <Suspense fallback={"..."}>
-          {AddGroupModalMemo}
+        {AddGroupModalMemo}
       </Suspense>
       <List
-        header="My Notes"
-        mode="card"
         style={styles.notes_list}
       >
         {Boolean(groups.length) && groups.map(({ id, name, memberNotes }: GroupType) => (
-          <div key={id}>
+          <View key={id}>
             <List.Item
               key={id}
-              arrow={false}
-              prefix={<IoDocumentsOutline />}
-              onClick={() => setOpenedGroup((curr: string) => curr === id ? "" : id)}
-              extra={<>
-                <BsFileEarmarkPlus
-                  style={{
-                    ...styles.add_icon,
-                    ...styles.group_button
-                  }}
-                  size={16}
-                  onClick={(event: any) => addToGroup(event, id)}
-                />
-                <AiFillDelete
-                  style={{
-                    ...styles.group_button,
-                    ...styles.delete_icon
-                  }}
-                  size={20}
-                  onClick={(event: any) => remove(event, "group", id)}
-                />
-              </>}
+              onPress={() => setOpenedGroup((curr: string) => curr === id ? "" : id)}
+              extra={
+                <View>
+                  <Flex>
+                    <Flex.Item>
+                      <BsFileEarmarkPlus
+                        style={{
+                          ...styles.add_icon,
+                          ...styles.group_button
+                        }}
+                        size={16}
+                        onClick={(event: any) => addToGroup(event, id)}
+                      />
+                    </Flex.Item>
+                    <Flex.Item>
+                      <AiFillDelete
+                        style={{
+                          ...styles.group_button,
+                          ...styles.delete_icon
+                        }}
+                        size={20}
+                        onClick={(event: any) => remove(event, "group", id)}
+                      />
+                    </Flex.Item>
+                  </Flex>
+                </View>}
             >
               <Text>
                 {trimString(name, 30)}
@@ -137,7 +140,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
                 groupId={id}
               />
             </List>}
-          </div>
+          </View>
         ))}
         <NotesListItems
           notes={notes}
