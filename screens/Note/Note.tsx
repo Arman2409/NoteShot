@@ -1,15 +1,12 @@
 import React, { Suspense, lazy, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import Button from "@ant-design/react-native/lib/button";
-import { Selector, Modal } from "antd-mobile";
-import { RxFontItalic } from "react-icons/rx";
-import { PiTextUnderlineBold } from "react-icons/pi";
+import Modal from "@ant-design/react-native/lib/modal";
 import { AiOutlineClose } from "react-icons/ai";
 import { CompactPicker } from "react-color";
 
 import styles from "./media/noteStyles.ts";
 import globalStyles from "../../styles/globals.ts";
-import variables from "../../styles/variables.ts";
 import type { GroupType, NoteType } from "../../types/types";
 import { NotesAndGroupsContext } from '../../App.tsx';
 import generateUniqueId from "../../globals/functions/generateUniqueId.ts";
@@ -19,13 +16,11 @@ import EditButtons from "./components/EditButtons/EditButtons.tsx";
 import HeaderButtons from "./components/HeaderButtons/HeaderButtons.tsx";
 import NoteEntry from "./components/NoteEntry/NoteEntry.tsx";
 import EmojiPicker from "./components/EmojiPicker/EmojiPicker.tsx";
+import StyleOptions from "./components/StyleOptions/StyleOptions.tsx";
 const GroupsModal = lazy(() => import("./components/GroupsModal/GroupsModal.tsx"));
 const PriorityModal = lazy(() => import("./components/PriorityModal/PriorityModal.tsx"));
 
-const styleOptions = [
-    { key: '1', label: <PiTextUnderlineBold />, value: "underline" },
-    { key: '2', label: <RxFontItalic />, value: "italic" },
-]
+
 
 const Note = ({ navigation }: { navigation: any }) => {
     const [title, setTitle] = useState<string>("");
@@ -94,20 +89,21 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     const addEditNote = useCallback(() => {
         if (!title) {
-            Modal.alert({
-                content: "Please type title for the note",
-                closeOnMaskClick: true,
-                confirmText: "Close",
-                showCloseButton: true
-            });
+            Modal.alert( "Please type title for the note",
+                "",
+                [
+                    { text: "Close", onPress: () => { } }
+                ]
+            );
             return;
         }
         if (!content) {
-            Modal.alert({
-                content: "Please type the note",
-                closeOnMaskClick: true,
-                confirmText: "Close"
-            });
+            Modal.alert( "Please type the note",
+                "",
+                [
+                    { text: "Close", onPress: () => { } }
+                ]
+            );
             return;
         }
         let notifyText = "";
@@ -372,21 +368,18 @@ const Note = ({ navigation }: { navigation: any }) => {
     const cancelNote = useCallback(() => {
         if (mode === "add" || mode === "addToGroup") {
             if (title || content) {
-                Modal.show({
-                    content: "Changes will be lost",
-                    showCloseButton: true,
-                    actions: [
+                Modal.alert("Changes will be lost",
+                    "",
+                    [
                         {
-                            key: "cancel",
                             text: "Continue",
                             style: globalStyles.modal_cancel_button,
-                            onClick: () => {
+                            onPress: () => {
                                 navigation.navigate("Home");
-                                Modal.clear();
                             }
                         }
-                    ],
-                })
+                    ]
+                )
                 return;
             }
         }
@@ -395,21 +388,18 @@ const Note = ({ navigation }: { navigation: any }) => {
             const { data: titleData, styles: titleStyles } = currentTitle;
             const { data: contentData, styles: contentStyles } = currentContent;
             if (title !== titleData || content !== contentData) {
-                Modal.show({
-                    content: "Changes will be lost",
-                    showCloseButton: true,
-                    actions: [
+                Modal.alert( "Changes will be lost",
+                    "",
+                    [
                         {
-                            key: "cancel",
                             text: "Continue",
                             style: globalStyles.modal_cancel_button,
-                            onClick: () => {
+                            onPress: () => {
                                 navigation.navigate("Home");
-                                Modal.clear();
                             }
                         }
                     ],
-                })
+                )
                 return;
             }
         }
@@ -505,19 +495,7 @@ const Note = ({ navigation }: { navigation: any }) => {
                             onChange={({ hex }) => changeProperty("color", hex)}
                         />
                     </View>}
-                <Selector
-                    options={styleOptions}
-                    multiple={true}
-                    onChange={changeStyles}
-                    showCheckMark={false}
-                    style={{
-                        ...styles.selector,
-                        "--color": variables.colorDark,
-                        "--checked-color": variables.colorDark,
-                        "--text-color": variables.colorLight,
-                        "--checked-text-color": variables.colorLight,
-                    }}
-                />
+                <StyleOptions actionFunction={changeStyles}/>
                 <EditButtons
                     setShowEmojis={setShowEmojis}
                     setShowColorPicker={setShowColorPicker}

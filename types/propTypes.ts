@@ -52,3 +52,7 @@ export type EmojiPickerProps = {
     setContent: Function
     addEmojiCallback: Function
 }
+
+export type StyleOptionsProps= {
+    actionFunction: Function
+}
