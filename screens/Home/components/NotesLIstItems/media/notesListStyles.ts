@@ -19,10 +19,12 @@ export default StyleSheet.create({
         color: variables.colorGreyDark,
     },
     delete_icon: {
+        marginTop: 5,
         color: variables.colorWarning
     },
-    extra_grid: {
-        display: "flex",
+    extra_cont: {
         padding: 5,
+        width: 60,
+        marginLeft: "auto"
     }
 })

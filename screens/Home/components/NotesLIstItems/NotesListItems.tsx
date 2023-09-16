@@ -1,5 +1,5 @@
 import { Text, View } from "react-native"
-import { Grid, List } from "antd-mobile"
+import List from "@ant-design/react-native/lib/list";
 import { AiFillDelete } from "react-icons/ai"
 
 import styles from "./media/notesListStyles";
@@ -23,35 +23,29 @@ const NotesListItems = ({ notes, areMembers, editNote, remove }: NotesListProps)
       {notes.map(({ id, content, priority, title, date, groupId }: NoteType) => (
         <List.Item
           key={id}
-          arrow={false}
-          onClick={() => editNote({ id, content, priority, title, date, groupId: areMembers ? groupId : null })}
-          extra={<View style={{padding: 5}}>
-            <Grid columns={2} style={styles.extra_grid}>
-              <Grid.Item>
+          onPress={() => editNote({ id, content, priority, title, date, groupId: areMembers ? groupId : null })}
+          extra={<View style={styles.extra_cont}>
+              <View style={{display:"flex", flexDirection: "row", marginLeft: "auto"}}>
                 <Text style={styles.date}>
                   {date}
                 </Text>
-              </Grid.Item>
-              <Grid.Item>
                 <AiFillDelete
                   style={styles.delete_icon}
                   size={20}
                   onClick={(e: any) => remove(e, areMembers ? "member" : "note", id, areMembers ? groupId : null)}
                 />
-              </Grid.Item>
-            </Grid>
+                </View>
             {Number.isInteger(priority) && <Priority priority={priority} />}
           </View>}
           style={areMembers ? styles.member_notes_list_item : {}}
-          description={<Text
-            style={{
+        >
+          <List.Item.Brief  style={{
               ...content.styles,
               ...styles.content,
               color: content.styles?.color
             }}>
-            {trimString(content.data, 30)}
-          </Text>}
-        >
+          {trimString(content.data, 30)}
+          </List.Item.Brief>
           <Text style={{
             ...title.styles,
             ...styles.title
