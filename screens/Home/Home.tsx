@@ -26,8 +26,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
     groups={groups}
     setGroups={setGroups}
     setVisible={setAddGroupStatus}
-    visible={addGroupStatus} />
-    , [groups, setGroups, setAddGroupStatus, addGroupStatus])
+    visible={addGroupStatus} />, [groups, setGroups, setAddGroupStatus, addGroupStatus])
 
   const editNote = useCallback((note: NoteType) => {
     setCurrentNote(note);

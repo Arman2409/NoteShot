@@ -1,6 +1,7 @@
-import { Suspense, lazy, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { Suspense, lazy, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { View, Text } from "react-native";
-import { Selector, Button, Modal } from "antd-mobile";
+import Button from "@ant-design/react-native/lib/button";
+import { Selector, Modal } from "antd-mobile";
 import { RxFontItalic } from "react-icons/rx";
 import { PiTextUnderlineBold } from "react-icons/pi";
 import { AiOutlineClose } from "react-icons/ai";
@@ -316,7 +317,7 @@ const Note = ({ navigation }: { navigation: any }) => {
 
     const changeProperty = useCallback((property: string, value: string) => {
         if (clickedType === "title") {
-            titleInput.current.nativeElement.style[property] = value;
+            titleInput.current.inputRef.inputRef.style[property] = value;
             noteDetails.current = {
                 ...noteDetails.current,
                 title: {
@@ -329,7 +330,7 @@ const Note = ({ navigation }: { navigation: any }) => {
             }
         }
         if (clickedType === "content") {
-            textArea.current.nativeElement.style[property] = value;
+            textArea.current.textAreaRef.style[property] = value;
             noteDetails.current = {
                 ...noteDetails.current,
                 content: {
@@ -438,10 +439,10 @@ const Note = ({ navigation }: { navigation: any }) => {
             const { data: titleData, styles: titleStyles } = currentTitle;
             const { data: contentData, styles: contentStyles } = currentContent;
             for (let property in titleStyles) {
-                titleInput.current.nativeElement.style[property] = titleStyles[property];
+                titleInput.current.inputRef.inputRef.style[property] = titleStyles[property];
             }
             for (let property in contentStyles) {
-                textArea.current.nativeElement.style[property] = contentStyles[property];
+                textArea.current.textAreaRef.style[property] = contentStyles[property];
             }
             setTitle(titleData)
             setContent(contentData)
@@ -532,17 +533,13 @@ const Note = ({ navigation }: { navigation: any }) => {
                 setClickedType={setClickedType}
             />
             <Button
-                block
-                color="success"
                 style={styles.add_edit_button}
-                onClick={addEditNote}>
+                onPress={addEditNote}>
                 {mode === "edit" ? "Edit" : "Add"}
             </Button>
             <Button
-                block
-                color="warning"
                 style={styles.cancel_button}
-                onClick={cancelNote}>
+                onPress={cancelNote}>
                 Cancel
             </Button>
         </View >

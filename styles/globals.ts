@@ -11,6 +11,10 @@ export default StyleSheet.create({
       backgroundColor: variables.colorLight,
       color: variables.colorGreyDark,
    },
+   modal_title: {
+         color: variables.colorGreyDark,
+         marginHorizontal: "auto"
+   },
    modal_cancel_button: {
       backgroundColor: variables.colorWarning,
       color: variables.colorLight,
