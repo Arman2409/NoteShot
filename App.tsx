@@ -1,7 +1,7 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import Provider from "@ant-design/react-native/lib/provider";
 
 import type { GroupType, NoteType } from './types/types';
 import initialData from "./initialData.json";
@@ -10,7 +10,7 @@ import Note from './screens/Note/Note';
 import DemoWarning from './globals/components/DemoWarning/DemoWarning';
 
 const Stack = createNativeStackNavigator();
-const { groups:initialGroups, notes:initialNotes, dimesionsWarning }:any = {...initialData};
+const { groups: initialGroups, notes: initialNotes, dimesionsWarning }: any = { ...initialData };
 
 export const NotesAndGroupsContext = createContext({});
 
@@ -21,7 +21,7 @@ const App = () => {
     const [currentNote, setCurrentNote] = useState<NoteType>({} as NoteType);
     const [showWarning, setShowWarning] = useState<boolean>(true);
 
-    const changeWarningStatus = useCallback((innerWidth:number) => {
+    const changeWarningStatus = useCallback((innerWidth: number) => {
         if (innerWidth < 600) {
             setShowWarning(false);
         }
@@ -31,16 +31,16 @@ const App = () => {
     }, [setShowWarning])
 
     useEffect(() => {
-        const {innerWidth} = window;
+        const { innerWidth } = window;
         changeWarningStatus(innerWidth);
         window.addEventListener("resize", (e: any) => {
-            const {innerWidth} = e.currentTarget
+            const { innerWidth } = e.currentTarget
             changeWarningStatus(innerWidth);
         })
     }, [window]);
 
     return (
-        <>
+        <Provider>
             {showWarning && <DemoWarning warning={dimesionsWarning} />}
             <NotesAndGroupsContext.Provider
                 value={{
@@ -60,7 +60,7 @@ const App = () => {
                     </Stack.Navigator>
                 </NavigationContainer>
             </NotesAndGroupsContext.Provider >
-        </>
+        </Provider>
     )
 }
 

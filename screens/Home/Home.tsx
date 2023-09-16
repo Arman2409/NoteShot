@@ -1,12 +1,10 @@
-import { Suspense, lazy, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
 import Button from '@ant-design/react-native/lib/button';
 import List from '@ant-design/react-native/lib/list';
 import Flex from "@ant-design/react-native/lib/flex";
-import Provider from "@ant-design/react-native/lib/provider";
 import { AiFillDelete } from 'react-icons/ai';
 import { PiCirclesThreePlusLight } from "react-icons/pi"
-import { IoDocumentsOutline } from "react-icons/io5";
 import { BsFileEarmarkPlus } from "react-icons/bs";
 import { LuPlus } from 'react-icons/lu';
 
@@ -78,7 +76,6 @@ export const Home = ({ navigation }: { navigation: any }) => {
   }, [])
 
   return (
-    <Provider>
     <View style={styles.main}>
       <View style={styles.add_buttons_cont}>
         <Button
@@ -157,7 +154,6 @@ export const Home = ({ navigation }: { navigation: any }) => {
         Nothing here yet
       </Text>}
     </View>
-    </Provider>
   );
 }
 
