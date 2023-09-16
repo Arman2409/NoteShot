@@ -1,40 +1,48 @@
-import { useState } from "react";
-import { View } from "react-native";
-import { Button, Modal, Rate } from "antd-mobile";
+import React, { useState } from "react";
+import { View, Text } from "react-native";
+import Modal from "@ant-design/react-native/lib/modal";
+import Button from "@ant-design/react-native/lib/button";
+import Stepper from "@ant-design/react-native/lib/stepper";
 
 import globalStyles from "../../../../styles/globals";
 import type { ModalProps } from "../../../../types/propTypes";
 
 const PriorityModal = (
     { visible, setVisible, updatePriority, defaultValue }: ModalProps
-     & { updatePriority: Function, defaultValue: number }) => {
+        & { updatePriority: Function, defaultValue: number }) => {
     const [priority, setPriority] = useState<number>(0);
 
     return (
         <Modal
+            popup
             visible={visible}
+            animateAppear={true}
+            closable={true}
+            animationType="slide-up"
             onClose={() => setVisible(false)}
-            showCloseButton
-            title="Change note's priority"
-            content={<View style={globalStyles.centered}>
-                <Rate
+        >
+            <Text style={globalStyles.modal_title}>
+                Change note's priority
+            </Text>
+            <View style={globalStyles.centered}>
+                <Stepper
+                    min={0}
+                    max={5}
                     defaultValue={defaultValue}
                     onChange={(value: number) => setPriority(value)}
                 />
                 <Button
-                    block
                     size="small"
                     style={{
                         ...globalStyles.modal_success_button,
-                        marginTop: 5
+                        marginTop: 15
                     }}
-                    onClick={() => updatePriority(priority)}
+                    onPress={() => updatePriority(priority)}
                 >
                     Save
                 </Button>
             </View>
-            }
-        />
+        </Modal>
     )
 }
 

@@ -5,6 +5,7 @@ import variables from "../../../../../styles/variables";
 export default StyleSheet.create({
     group_item: {
         backgroundColor: variables.colorLight,
-        marginVertical: 5
+        marginVertical: 5,
+        fontSize: 20
     }
 })

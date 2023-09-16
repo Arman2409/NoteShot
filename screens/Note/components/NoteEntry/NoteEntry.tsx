@@ -1,7 +1,11 @@
-import { Form, Input, TextArea } from "antd-mobile"
+import { View } from "react-native";
+import Input from "@ant-design/react-native/lib/input-item";
+import TextArea from "@ant-design/react-native/lib/textarea-item";
+
 import { NoteEntryProps } from "../../../../types/propTypes";
 
-const NoteEntry = ({ title,
+const NoteEntry = ({ 
+    title,
     setTitle,
     titleRef,
     content,
@@ -10,34 +14,27 @@ const NoteEntry = ({ title,
     setClickedType }: NoteEntryProps) => {
     return (
         <>
-            <Form layout='horizontal'>
-                <Form.Item
-                    label='Title'
-                    arrow={false}
-                    onClick={() => setClickedType("title")}
-                >
+            <View
+             onTouchStart={() => setClickedType("title")}
+            >
                     <Input
                         placeholder='Title for the note'
-                        clearable
                         value={title}
                         ref={titleRef}
                         onChange={(val: string) => setTitle(val)}
                     />
-                </Form.Item>
-            </Form>
-            <Form layout='horizontal'>
-                <Form.Item
-                    arrow={false}
-                    onClick={() => setClickedType("content")}>
+            </View>
+                <View
+                    onTouchStart={() => setClickedType("content")}>
                     <TextArea
+                        clear
                         ref={contentRef}
                         value={content}
                         placeholder="Type your Note here"
                         rows={12}
-                        onChange={(txt: string) => setContent(txt)}
+                        onChange={(txt: string|undefined) => setContent(txt)}
                     />
-                </Form.Item>
-            </Form>
+                </View>
         </>
     )
 }

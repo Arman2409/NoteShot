@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid } from "antd-mobile";
+import Flex from "@ant-design/react-native/lib/flex";
 import { CgFileRemove, CgFileAdd } from "react-icons/cg";
 import { MdLowPriority } from "react-icons/md";
 
@@ -9,8 +9,8 @@ import type { HeaderButtonsProps } from "../../../../types/propTypes";
 
 const HeaderButtons = ({inGroup, groupAction, setShowPriorityModal}:HeaderButtonsProps) => {
     return (
-        <Grid columns={2}>
-            <Grid.Item
+        <Flex>
+            <Flex.Item
                 style={{
                     ...globalStyles.centered,
                     ...styles.action_button
@@ -24,8 +24,8 @@ const HeaderButtons = ({inGroup, groupAction, setShowPriorityModal}:HeaderButton
                         style={styles.action_icon}
                         onClick={groupAction as any}
                     />}
-            </Grid.Item>
-            <Grid.Item
+            </Flex.Item>
+            <Flex.Item
                 style={{
                     ...globalStyles.centered,
                     ...styles.action_button
@@ -35,8 +35,8 @@ const HeaderButtons = ({inGroup, groupAction, setShowPriorityModal}:HeaderButton
                 <MdLowPriority
                     style={styles.action_icon}
                     size={25} />
-            </Grid.Item>
-        </Grid>
+            </Flex.Item>
+        </Flex>
     )
 }
 
