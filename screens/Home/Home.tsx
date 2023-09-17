@@ -3,10 +3,7 @@ import { View, Text } from 'react-native';
 import Button from '@ant-design/react-native/lib/button';
 import List from '@ant-design/react-native/lib/list';
 import Flex from "@ant-design/react-native/lib/flex";
-import { AiFillDelete } from 'react-icons/ai';
-import { PiCirclesThreePlusLight } from "react-icons/pi"
-import { BsFileEarmarkPlus } from "react-icons/bs";
-import { LuPlus } from 'react-icons/lu';
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import styles from './media/homeStyles.ts';
 import globalStyles from '../../styles/globals.ts';
@@ -80,12 +77,12 @@ export const Home = ({ navigation }: { navigation: any }) => {
         <Button
           style={styles.add_button}
           onPress={() => setAddGroupStatus(true)}>
-          <PiCirclesThreePlusLight />
+            <Icon name="folder-plus" />
         </Button>
         <Button
           style={styles.add_button}
           onPress={addNote}>
-          <LuPlus />
+            <Icon name="plus" />
         </Button>
       </View>
       <Suspense fallback={"..."}>
@@ -102,24 +99,28 @@ export const Home = ({ navigation }: { navigation: any }) => {
               extra={
                 <View>
                   <Flex>
-                    <Flex.Item>
-                      <BsFileEarmarkPlus
+                    <Flex.Item
+                        onClick={(event: any) => addToGroup(event, id)}
+                        >
+                      <Icon
+                        name="square-plus"
                         style={{
                           ...styles.add_icon,
                           ...styles.group_button
                         }}
                         size={16}
-                        onClick={(event: any) => addToGroup(event, id)}
                       />
                     </Flex.Item>
-                    <Flex.Item>
-                      <AiFillDelete
+                    <Flex.Item
+                        onClick={(event: any) => remove(event, "group", id)}
+                        >
+                      <Icon
+                        name="trash"
                         style={{
                           ...styles.group_button,
                           ...styles.delete_icon
                         }}
                         size={20}
-                        onClick={(event: any) => remove(event, "group", id)}
                       />
                     </Flex.Item>
                   </Flex>
