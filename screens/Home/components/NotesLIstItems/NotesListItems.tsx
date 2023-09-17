@@ -1,6 +1,6 @@
 import { Text, View } from "react-native"
 import List from "@ant-design/react-native/lib/list";
-import { AiFillDelete } from "react-icons/ai"
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import styles from "./media/notesListStyles";
 import type { NotesListProps } from "../../../../types/propTypes"
@@ -25,31 +25,32 @@ const NotesListItems = ({ notes, areMembers, editNote, remove }: NotesListProps)
           key={id}
           onPress={() => editNote({ id, content, priority, title, date, groupId: areMembers ? groupId : null })}
           extra={<View style={styles.extra_cont}>
-              <View style={{display:"flex", flexDirection: "row", marginLeft: "auto"}}>
-                <Text style={styles.date}>
-                  {date}
-                </Text>
-                <AiFillDelete
-                  style={styles.delete_icon}
-                  size={20}
-                  onClick={(e: any) => remove(e, areMembers ? "member" : "note", id, areMembers ? groupId : null)}
-                />
-                </View>
+            <View style={{ display: "flex", flexDirection: "row", marginLeft: "auto" }}>
+              <Text style={styles.date}>
+                {date}
+              </Text>
+              <Icon
+                name="trash"
+                style={styles.delete_icon}
+                size={20}
+                onPress={(e: any) => remove(e, areMembers ? "member" : "note", id, areMembers ? groupId : null)}
+              />
+            </View>
             {Number.isInteger(priority) && <Priority priority={priority} />}
           </View>}
           style={areMembers ? styles.member_notes_list_item : {}}
         >
-          <List.Item.Brief  style={{
-              ...content.styles,
-              ...styles.content,
-              color: content.styles?.color
-            }}>
-          {trimString(content.data, 30)}
+          <List.Item.Brief style={{
+            ...content.styles,
+            ...styles.content,
+            color: content.styles?.color
+          }}>
+            {trimString(content.data, 30)}
           </List.Item.Brief>
           <Text style={{
             ...title.styles,
             ...styles.title
-            }}>
+          }}>
             {trimString(title.data, 30)}
           </Text>
         </List.Item>)
