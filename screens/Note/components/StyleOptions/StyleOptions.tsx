@@ -1,15 +1,14 @@
 import React, { useCallback, useState } from "react";
 import { View } from "react-native";
-import { RxFontItalic } from "react-icons/rx";
-import { PiTextUnderlineBold } from "react-icons/pi";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import styles from "./media/styleOptions";
 import globalStyles from "../../../../styles/globals";
 import type { StyleOptionsProps } from "../../../../types/propTypes";
 
 const styleOptions = [
-    { key: '1', label: <PiTextUnderlineBold />, value: "underline" },
-    { key: '2', label: <RxFontItalic />, value: "italic" },
+    { key: '1', label: <Icon name="format-underline" size={20} />, value: "underline" },
+    { key: '2', label: <Icon name="format-italic" size={20} />, value: "italic" },
 ]
 
 const StyleOptions = ({ actionFunction }: StyleOptionsProps) => {

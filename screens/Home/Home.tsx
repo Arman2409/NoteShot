@@ -1,9 +1,9 @@
 import React, { Suspense, lazy, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import Button from '@ant-design/react-native/lib/button';
 import List from '@ant-design/react-native/lib/list';
 import Flex from "@ant-design/react-native/lib/flex";
-import Icon from "react-native-vector-icons/FontAwesome";
 
 import styles from './media/homeStyles.ts';
 import globalStyles from '../../styles/globals.ts';
@@ -77,12 +77,12 @@ export const Home = ({ navigation }: { navigation: any }) => {
         <Button
           style={styles.add_button}
           onPress={() => setAddGroupStatus(true)}>
-            <Icon name="folder-plus" />
+            <Icon name="add-to-photos" size={20}/>
         </Button>
         <Button
           style={styles.add_button}
           onPress={addNote}>
-            <Icon name="plus" />
+            <Icon name="add" size={20}/>
         </Button>
       </View>
       <Suspense fallback={"..."}>
@@ -103,7 +103,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
                         onClick={(event: any) => addToGroup(event, id)}
                         >
                       <Icon
-                        name="square-plus"
+                        name="note-add"
                         style={{
                           ...styles.add_icon,
                           ...styles.group_button
@@ -115,7 +115,7 @@ export const Home = ({ navigation }: { navigation: any }) => {
                         onClick={(event: any) => remove(event, "group", id)}
                         >
                       <Icon
-                        name="trash"
+                        name="delete"
                         style={{
                           ...styles.group_button,
                           ...styles.delete_icon

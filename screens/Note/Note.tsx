@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useCallback, useContext, useEffect, useLayoutEff
 import { View, Text } from "react-native";
 import Button from "@ant-design/react-native/lib/button";
 import Modal from "@ant-design/react-native/lib/modal";
-import { AiOutlineClose } from "react-icons/ai";
+import Icon from "react-native-vector-icons/MaterialIcons.js";
 import { CompactPicker } from "react-color";
 
 import styles from "./media/noteStyles.ts";
@@ -17,10 +17,8 @@ import HeaderButtons from "./components/HeaderButtons/HeaderButtons.tsx";
 import NoteEntry from "./components/NoteEntry/NoteEntry.tsx";
 import EmojiPicker from "./components/EmojiPicker/EmojiPicker.tsx";
 import StyleOptions from "./components/StyleOptions/StyleOptions.tsx";
-const GroupsModal = lazy(() => import("./components/GroupsModal/GroupsModal.tsx"));
-const PriorityModal = lazy(() => import("./components/PriorityModal/PriorityModal.tsx"));
-
-
+const GroupsModal = lazy(() => import("./components/GroupsModal/GroupsModal.tsx") as any);
+const PriorityModal = lazy(() => import("./components/PriorityModal/PriorityModal.tsx") as any);
 
 const Note = ({ navigation }: { navigation: any }) => {
     const [title, setTitle] = useState<string>("");
@@ -487,9 +485,10 @@ const Note = ({ navigation }: { navigation: any }) => {
             <View style={styles.actions_cont}>
                 {showColorPicker &&
                     <View style={styles.color_picker_cont}>
-                        <AiOutlineClose
+                        <Icon
+                            name="close"
                             size={20}
-                            onClick={() => setShowColorPicker(false)}
+                            onPress={() => setShowColorPicker(false)}
                             style={styles.color_picker_close_button} />
                         <CompactPicker
                             onChange={({ hex }) => changeProperty("color", hex)}

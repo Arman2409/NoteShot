@@ -17,6 +17,7 @@
     "@babel/plugin-transform-shorthand-properties": "^7.0.0-0",
     "@babel/plugin-transform-template-literals": "^7.0.0-0",
     "@babel/preset-env": ">=7.1.6 <8.0.0",
+    "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^19.0.0",
     "@react-native-camera-roll/camera-roll": "^5.9.0",
     "@react-native-community/masked-view": "^0.1.11",

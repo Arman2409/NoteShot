@@ -3,7 +3,6 @@ import { Text } from "react-native";
 import Modal from "@ant-design/react-native/lib/modal";
 import List from "@ant-design/react-native/lib/list";
 import Button from "@ant-design/react-native/lib/button";
-import { IoDocumentsOutline } from "react-icons/io5";
 
 import styles from "./media/groupsModalStyles";
 import globalStyles from "../../../../styles/globals";
