@@ -1,29 +1,24 @@
 import React from "react";
 import Flex from "@ant-design/react-native/lib/flex";
-import { CgFileRemove, CgFileAdd } from "react-icons/cg";
-import { MdLowPriority } from "react-icons/md";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import styles from "./media/headerButtonsStyles";
 import globalStyles from "../../../../styles/globals";
 import type { HeaderButtonsProps } from "../../../../types/propTypes";
 
-const HeaderButtons = ({inGroup, groupAction, setShowPriorityModal}:HeaderButtonsProps) => {
+const HeaderButtons = ({ inGroup, groupAction, setShowPriorityModal }: HeaderButtonsProps) => {
     return (
         <Flex>
             <Flex.Item
                 style={{
                     ...globalStyles.centered,
                     ...styles.action_button
-                }}>
-                {inGroup ? <CgFileRemove
+                }}
+                onClick={groupAction as any}>
+                     <Icon
+                    name="iso"
                     style={styles.action_icon}
-                    onClick={groupAction as any}
-                    size={25} /> :
-                    <CgFileAdd
-                        size={25}
-                        style={styles.action_icon}
-                        onClick={groupAction as any}
-                    />}
+                    size={25} />
             </Flex.Item>
             <Flex.Item
                 style={{
@@ -32,9 +27,11 @@ const HeaderButtons = ({inGroup, groupAction, setShowPriorityModal}:HeaderButton
                 }}
                 onClick={() => setShowPriorityModal()}
             >
-                <MdLowPriority
+                <Icon
+                    size={25}
+                    name="low-priority"
                     style={styles.action_icon}
-                    size={25} />
+                />
             </Flex.Item>
         </Flex>
     )

@@ -2,11 +2,10 @@ import React, { useCallback, useState } from "react";
 import { View, Text } from "react-native";
 import Modal from "@ant-design/react-native/lib/modal";
 import EmojiSelector from "react-native-emoji-selector";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import styles from "./media/emojisStyles";
 import type { EmojiPickerProps } from "../../../../types/propTypes";
-import { LuDelete } from "react-icons/lu";
-import { CgClose } from "react-icons/cg";
 
 const EmojiPicker = ({ showEmojis, setShowEmojis, clickedType,
     setTitle, setContent, addEmojiCallback }: EmojiPickerProps) => {
@@ -60,18 +59,20 @@ const EmojiPicker = ({ showEmojis, setShowEmojis, clickedType,
             onClose={() => setShowEmojis(false)}
         >
             {showEmojis && <View style={styles.emojis_main}>
-                <CgClose 
+                <Icon 
+                  name="close"
                   size={20}
                   style={styles.close_button} 
-                  onClick={() => setShowEmojis(false)}
+                  onPress={() => setShowEmojis(false)}
                 />
                 <View style={styles.selected_cont}>
                     <Text>
                         {selectedEmojis}
                     </Text>
-                    <LuDelete
+                    <Icon
+                        name="backspace"
                         style={styles.delete_icon}
-                        onClick={deleteEmoji}
+                        onPress={deleteEmoji}
                     />
                 </View>
                 <View style={styles.emojis_cont}>

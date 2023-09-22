@@ -1,7 +1,6 @@
 
 import Flex from "@ant-design/react-native/lib/flex";
-import { LuPaintbrush2 } from "react-icons/lu";
-import { AiFillSmile } from "react-icons/ai";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import globalStyles from "../../../../styles/globals";
 import styles from "./media/editButtonsStyles";
@@ -18,7 +17,8 @@ const EditButtons = ({ setShowEmojis, setShowColorPicker }: EditButtonsProps) =>
             }}
             onClick={() => setShowEmojis((curr: boolean) => !curr)}
         >
-            <AiFillSmile
+            <Icon
+                name="emoji-symbols"
                 style={styles.action_icon}
                 size={25}
             />
@@ -30,7 +30,8 @@ const EditButtons = ({ setShowEmojis, setShowColorPicker }: EditButtonsProps) =>
             }}
             onClick={() => setShowColorPicker((curr: boolean) => !curr)}
         >
-            <LuPaintbrush2
+            <Icon 
+                name="palette"
                 style={styles.action_icon}
                 size={25} />
         </Flex.Item>

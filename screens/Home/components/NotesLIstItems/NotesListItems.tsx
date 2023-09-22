@@ -1,6 +1,6 @@
 import { Text, View } from "react-native"
 import List from "@ant-design/react-native/lib/list";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import styles from "./media/notesListStyles";
 import type { NotesListProps } from "../../../../types/propTypes"
@@ -30,7 +30,7 @@ const NotesListItems = ({ notes, areMembers, editNote, remove }: NotesListProps)
                 {date}
               </Text>
               <Icon
-                name="trash"
+                name="delete"
                 style={styles.delete_icon}
                 size={20}
                 onPress={(e: any) => remove(e, areMembers ? "member" : "note", id, areMembers ? groupId : null)}
